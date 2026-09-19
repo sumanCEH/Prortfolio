@@ -17,7 +17,7 @@ export const environment = {
    * TODO: replace with the real Vercel URL or custom domain, and update the
    * same address in public/robots.txt and public/sitemap.xml.
    */
-  siteUrl: 'https://suman-portfolio.vercel.app',
+  siteUrl: 'https://sumanceh.github.io/Prortfolio',
   production: false,
   emailjsServiceId: 'REPLACE_ME',
   emailjsTemplateId: 'REPLACE_ME',

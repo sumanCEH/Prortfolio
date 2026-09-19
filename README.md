@@ -65,10 +65,23 @@ Until the placeholders (`REPLACE_ME`) are replaced, the form shows a friendly "n
 - [ ] Create the EmailJS account and paste the 3 real keys into `environment.prod.ts`.
 - [x] Email, LinkedIn, GitHub, both phone numbers and the WhatsApp chat number are set in `cv-data.ts` (`contact`).
 - [ ] Until EmailJS is configured, the contact form offers the visitor a pre-filled email link and a Gmail link instead of sending directly.
-- [ ] Set `siteUrl` in both environment files to the real URL. Update the same URL in `public/robots.txt` and `public/sitemap.xml`.
+- [x] `siteUrl`, `robots.txt` and `sitemap.xml` point at the GitHub Pages address (`https://sumanceh.github.io/Prortfolio/`). Change all three if you add a custom domain.
 - [ ] When the photo is ready, put it in `src/assets/images/` and set `profile.photoUrl` in `cv-data.ts`. That switches the hero to the photo layout, with the 3D cluster as a corner accent.
-- [ ] Push to GitHub, import the repo in Vercel, and let it auto-deploy on every push. `vercel.json` already sets the output directory.
-- [ ] Optional: attach a custom domain in the Vercel project settings.
+- [ ] Publish it: follow **Hosting on GitHub Pages** below.
+
+## Hosting on GitHub Pages (free)
+
+`.github/workflows/deploy.yml` tests, builds and publishes the site on every push to `main`.
+
+1. Push the project to `main` on GitHub.
+2. In the repo go to **Settings > Pages > Build and deployment** and set **Source** to **GitHub Actions**. Do this once.
+3. Open the **Actions** tab. When "Deploy to GitHub Pages" turns green, the site is live at **https://sumanceh.github.io/Prortfolio/**.
+
+Notes:
+- The workflow builds with `--base-href /<repo-name>/`, so the site works under the repo's subpath. To build the same way locally: `npx ng build --base-href /Prortfolio/`.
+- A repo named `<username>.github.io` is served from the domain root. In that case change `--base-href` in the workflow to `/`, and drop `/Prortfolio` from the URLs in the environment files, `robots.txt` and `sitemap.xml`.
+- GitHub Pages on a free account needs a **public** repository.
+- `vercel.json` is only needed if you also deploy to Vercel. It does no harm on GitHub Pages.
 
 ## Project structure
 

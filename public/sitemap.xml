@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Single-page site, so one URL. TODO: replace with the real site URL. -->
+<!-- Single-page site, so one URL. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://suman-portfolio.vercel.app/</loc>
+    <loc>https://sumanceh.github.io/Prortfolio/</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>

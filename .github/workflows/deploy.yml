@@ -1,0 +1,61 @@
+name: Deploy to GitHub Pages
+
+# Builds the Angular site and publishes it to GitHub Pages on every push to main.
+# One-time setup in the repo: Settings > Pages > Build and deployment > Source: "GitHub Actions".
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never run two deploys at once, and let a running one finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Unit tests
+        run: npm test -- --watch=false
+
+      # A project site lives under /<repo-name>/, so the base href must match. Taking it from
+      # the repository name means it keeps working if the repo is renamed.
+      - name: Build
+        run: npx ng build --base-href "/${{ github.event.repository.name }}/"
+
+      # GitHub Pages serves 404.html for unknown URLs. This is a one-page site, so any path
+      # simply shows the site again instead of a GitHub error page.
+      - name: Add 404 page
+        run: cp dist/suman-portfolio/browser/index.html dist/suman-portfolio/browser/404.html
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/suman-portfolio/browser
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

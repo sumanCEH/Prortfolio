@@ -86,7 +86,7 @@ Secondary, lighter 3D/motion touches elsewhere (kept subtle so the site stays fa
 
 1. **Hero** — "Suman Sarkar", role line "Fullstack Java Developer · Senior Associate Consultant", one-line value prop ("I build reliable, cloud-native backend systems for enterprise-scale products"), status chip "📩 Available for new opportunities", primary CTA "Get in touch", secondary CTA "Download Résumé", 3D node-cluster.
 2. **About** — condensed professional summary from the CV; quick facts strip (4+ yrs experience · Healthcare & Automotive domains · Kolkata, India · Open to relocate – Bengaluru).
-3. **Experience (timeline)** — Infosys (Nov 2024–Present, Fortune 10 Healthcare client) → Capgemini (Oct 2022–Nov 2024, Mercedes-Benz/automotive OEM) → Capgemini Internship (Jan–Apr 2022). Each entry: role, company, dates, 2–3 top bullet achievements pulled from the CV (production incidents resolved, CI/CD ownership, mentoring, the Copilot/GPT/Claude tooling work).
+3. **Experience (timeline)** — Infosys (Nov 2024–Present, Fortune 10 Healthcare client) → Capgemini (Oct 2022–Nov 2024, global luxury automotive OEM) → Capgemini Internship (Jan–Apr 2022). Each entry: role, company, dates, 2–3 top bullet achievements pulled from the CV (production incidents resolved, CI/CD ownership, mentoring, the Copilot/GPT/Claude tooling work).
 4. **Work / Highlights** (per your answer: real work + architecture diagrams, no fake product shots):
    - **CMR Training Portal** (Capgemini) — greenfield web portal built from scratch.
    - **GHCP + Markdown ticket-acceleration tool** (Infosys) — won the Insta Award, 40% faster ticket resolution; show this as the flagship case-study card with the metric front and center.

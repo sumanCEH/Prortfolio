@@ -2,30 +2,8 @@
 // Everything here is exposed as CSS custom properties so components can read
 // them at runtime (and so a future light/dark switch is a one-file change).
 
-// ---------- Self-hosted fonts (variable, latin subset) ----------
-@font-face {
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 300 700;
-  font-display: swap;
-  src: url('/assets/fonts/space-grotesk-latin-wght-normal.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url('/assets/fonts/inter-latin-wght-normal.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 100 800;
-  font-display: swap;
-  src: url('/assets/fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2');
-}
+// The self-hosted web fonts (Space Grotesk, Inter, JetBrains Mono) are declared in
+// src/index.html so their URLs follow <base href> when the site is served from a subpath.
 
 // Metric-matched fallbacks: while the web font loads, the system font is scaled to
 // occupy the same space, so the swap causes no layout shift (values from @capsizecss/metrics).

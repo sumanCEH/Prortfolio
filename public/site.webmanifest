@@ -2,7 +2,7 @@
   "name": "Suman Sarkar | Fullstack Java Developer",
   "short_name": "Suman Sarkar",
   "description": "Portfolio of Suman Sarkar, Fullstack Java Developer.",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#05060a",
   "theme_color": "#05060a",

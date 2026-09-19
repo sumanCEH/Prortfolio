@@ -9,10 +9,10 @@
 export const environment = {
   /**
    * Public URL of the deployed site, used for canonical/Open Graph URLs.
-   * TODO: replace with the real Vercel URL or custom domain, and update the
+   * Public URL (GitHub Pages project site). If you add a custom domain, change this and the
    * same address in public/robots.txt and public/sitemap.xml.
    */
-  siteUrl: 'https://suman-portfolio.vercel.app',
+  siteUrl: 'https://sumanceh.github.io/Prortfolio',
   production: true,
   emailjsServiceId: 'REPLACE_ME',
   emailjsTemplateId: 'REPLACE_ME',
