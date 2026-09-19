@@ -1,0 +1,22 @@
+@use '../../../styles/mixins' as m;
+
+:host {
+  @include m.glass;
+  display: block;
+  height: 100%; // fill the grid cell so neighbours in a row match
+  padding: var(--space-4);
+  transition:
+    border-color var(--dur-med) var(--ease-out),
+    box-shadow var(--dur-med) var(--ease-out);
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--brand-cyan) 30%, transparent);
+    box-shadow: var(--glow-blue);
+  }
+}
+
+@include m.bp-down(768px) {
+  :host {
+    padding: var(--space-3);
+  }
+}

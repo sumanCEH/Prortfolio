@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Suman Sarkar | Fullstack Java Developer</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#05060a">
+
+  <!-- Favicons: SVG for modern browsers, ICO fallback, PNG for iOS / installed apps. -->
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <link rel="preload" href="/assets/fonts/space-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!--
+    First-visit loading screen. It lives here (not in Angular) so it paints instantly,
+    before any JavaScript bundle arrives. It shows once per browser: returning visitors
+    skip it, and adding ?intro to the URL replays it.
+  -->
+  <script>
+    (function () {
+      var root = document.documentElement;
+      try {
+        var seen = localStorage.getItem('portfolio:visited');
+        var replay = /[?&]intro\b/.test(location.search);
+        root.className += seen && !replay ? ' no-intro' : ' is-loading';
+      } catch (e) {
+        root.className += ' no-intro';
+      }
+    })();
+  </script>
+  <style>
+    @font-face {
+      font-family: 'Space Grotesk';
+      font-weight: 300 700;
+      font-display: swap;
+      src: url('/assets/fonts/space-grotesk-latin-wght-normal.woff2') format('woff2');
+    }
+    /* Reserve the scrollbar's space so removing the scroll lock never shifts the layout. */
+    html { scrollbar-gutter: stable; background: #05060a; }
+    html.is-loading { overflow: hidden; }
+    html.no-intro #preloader { display: none; }
+
+    #preloader {
+      position: fixed; inset: 0; z-index: 9999;
+      display: grid; place-items: center;
+      color: #edeff7; cursor: progress;
+      font-family: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+    }
+    /* Two halves that part like a curtain when loading finishes. */
+    .pl__panel {
+      position: absolute; left: 0; right: 0; height: 50.5%;
+      transition: transform 1s cubic-bezier(.77, 0, .18, 1) .3s;
+    }
+    /* Both halves draw slices of ONE gradient (200% tall, top vs bottom), so no seam shows. */
+    .pl__panel {
+      background:
+        radial-gradient(ellipse 55% 42% at 50% 38%, rgba(46, 107, 255, .3), transparent 72%),
+        radial-gradient(ellipse 50% 40% at 50% 68%, rgba(124, 92, 255, .24), transparent 72%),
+        #05060a;
+      background-size: 100% 198%;
+    }
+    .pl__panel--top { top: 0; background-position: 0 0; }
+    .pl__panel--bottom { bottom: 0; background-position: 0 100%; }
+    .pl__content {
+      position: relative; display: flex; flex-direction: column; align-items: center;
+      gap: 26px; padding: 24px; text-align: center;
+      transition: opacity .45s ease, transform .6s ease;
+    }
+
+    /* Monogram inside a ring that draws itself. */
+    .pl__mark { position: relative; width: 132px; height: 132px; }
+    .pl__ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+    .pl__ring circle { fill: none; stroke-width: 2; }
+    .pl__ring-track { stroke: rgba(255, 255, 255, .08); }
+    .pl__ring-bar {
+      stroke-linecap: round;
+      stroke-dasharray: 339.3; stroke-dashoffset: 339.3;
+      animation: pl-ring 1.9s cubic-bezier(.65, 0, .25, 1) .2s forwards;
+    }
+    .pl__logo {
+      position: absolute; left: 50%; top: 50%; width: 68px; height: 68px;
+      margin: -34px 0 0 -34px; opacity: 0; transform: scale(.6);
+      filter: drop-shadow(0 0 22px rgba(70, 100, 255, .55));
+      animation: pl-pop .7s cubic-bezier(.34, 1.56, .64, 1) .15s forwards;
+    }
+    .pl__s { stroke-dasharray: 1; stroke-dashoffset: 1; animation: pl-draw 1.1s ease-out .5s forwards; }
+    .pl__dot { opacity: 0; animation: pl-fade .4s ease 1.5s forwards; }
+
+    .pl__name {
+      display: flex; margin: 0; font-size: clamp(1.15rem, 4.2vw, 1.75rem);
+      font-weight: 600; letter-spacing: .38em; text-transform: uppercase;
+    }
+    .pl__name span {
+      display: inline-block; opacity: 0; transform: translateY(14px); filter: blur(6px);
+      animation: pl-letter .8s cubic-bezier(.22, 1, .36, 1) forwards;
+      animation-delay: calc(.8s + var(--i) * 55ms);
+    }
+    .pl__name .sp { width: .6em; }
+    .pl__role {
+      margin: -8px 0 0; font-size: .72rem; letter-spacing: .32em; text-transform: uppercase;
+      color: #22d3ee; opacity: 0; animation: pl-fade .8s ease 1.7s forwards;
+    }
+    .pl__progress {
+      width: min(220px, 60vw); height: 2px; border-radius: 2px; overflow: hidden;
+      background: rgba(255, 255, 255, .1);
+    }
+    .pl__bar {
+      display: block; height: 100%; transform: scaleX(0); transform-origin: left;
+      background: linear-gradient(90deg, #2e6bff, #7c5cff, #22d3ee);
+    }
+    .pl__count {
+      margin: -12px 0 0; font: 500 .75rem/1 'JetBrains Mono', ui-monospace, monospace;
+      color: #9aa0b4; font-variant-numeric: tabular-nums; letter-spacing: .1em;
+    }
+
+    /* Exit: content lifts away, then the curtain parts. */
+    #preloader.is-done { pointer-events: none; cursor: default; }
+    #preloader.is-done .pl__content { opacity: 0; transform: scale(1.05); }
+    #preloader.is-done .pl__panel--top { transform: translateY(-101%); }
+    #preloader.is-done .pl__panel--bottom { transform: translateY(101%); }
+
+    @keyframes pl-ring { to { stroke-dashoffset: 0; } }
+    @keyframes pl-pop { to { opacity: 1; transform: scale(1); } }
+    @keyframes pl-draw { to { stroke-dashoffset: 0; } }
+    @keyframes pl-fade { to { opacity: 1; } }
+    @keyframes pl-letter { to { opacity: 1; transform: none; filter: none; } }
+
+    /* Reduced motion: show everything at once and fade instead of sliding. */
+    @media (prefers-reduced-motion: reduce) {
+      .pl__ring-bar, .pl__s, .pl__dot, .pl__name span, .pl__role, .pl__logo { animation: none; }
+      .pl__ring-bar, .pl__s { stroke-dashoffset: 0; }
+      .pl__dot, .pl__name span, .pl__role, .pl__logo { opacity: 1; transform: none; filter: none; }
+      .pl__panel { transition: opacity .4s ease; }
+      #preloader.is-done .pl__panel--top, #preloader.is-done .pl__panel--bottom { transform: none; opacity: 0; }
+      #preloader.is-done .pl__content { transform: none; }
+    }
+  </style>
+  <noscript><style>#preloader { display: none !important; } html.is-loading { overflow: auto; }</style></noscript>
+</head>
+<body>
+  <div id="preloader" role="status" aria-live="polite" aria-label="Loading portfolio">
+    <div class="pl__panel pl__panel--top"></div>
+    <div class="pl__panel pl__panel--bottom"></div>
+
+    <div class="pl__content">
+      <div class="pl__mark" aria-hidden="true">
+        <svg class="pl__ring" viewBox="0 0 120 120" focusable="false">
+          <defs>
+            <linearGradient id="pl-ring-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#2e6bff"/>
+              <stop offset=".55" stop-color="#7c5cff"/>
+              <stop offset="1" stop-color="#22d3ee"/>
+            </linearGradient>
+          </defs>
+          <circle class="pl__ring-track" cx="60" cy="60" r="54"/>
+          <circle class="pl__ring-bar" cx="60" cy="60" r="54" stroke="url(#pl-ring-grad)"/>
+        </svg>
+        <svg class="pl__logo" viewBox="0 0 64 64" focusable="false">
+          <defs>
+            <linearGradient id="pl-tile-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#2e6bff"/>
+              <stop offset="1" stop-color="#7c5cff"/>
+            </linearGradient>
+          </defs>
+          <rect width="64" height="64" rx="15" fill="url(#pl-tile-grad)"/>
+          <path class="pl__s" pathLength="1" d="M43.5 23c-1.7-4.1-5.5-6.3-10.6-6.3-6 0-10.2 3-10.2 7.5 0 4.7 4 6.3 9.7 7.6 6 1.4 10.9 3.2 10.9 8.7 0 5-4.4 8.3-10.7 8.3-5.6 0-9.9-2.4-11.8-6.8" fill="none" stroke="#fff" stroke-width="5.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle class="pl__dot" cx="50" cy="14.5" r="3.3" fill="#22d3ee"/>
+        </svg>
+      </div>
+
+      <p class="pl__name" aria-hidden="true">
+        <span style="--i:0">S</span><span style="--i:1">u</span><span style="--i:2">m</span><span style="--i:3">a</span><span style="--i:4">n</span><span class="sp"></span><span style="--i:6">S</span><span style="--i:7">a</span><span style="--i:8">r</span><span style="--i:9">k</span><span style="--i:10">a</span><span style="--i:11">r</span>
+      </p>
+      <p class="pl__role" aria-hidden="true">Fullstack Java Developer</p>
+
+      <div class="pl__progress" aria-hidden="true"><span class="pl__bar"></span></div>
+      <p class="pl__count" aria-hidden="true"><span id="pl-num">0</span>%</p>
+    </div>
+  </div>
+
+  <app-root></app-root>
+
+  <script>
+    (function () {
+      var el = document.getElementById('preloader');
+      if (!el) return;
+      var root = document.documentElement;
+
+      // Returning visitor: nothing to show.
+      if (root.className.indexOf('is-loading') === -1) { el.parentNode.removeChild(el); return; }
+
+      var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var minMs = reduce ? 700 : 2800;   // long enough for the intro animation to play out
+      var maxMs = 9000;                  // never hold the page hostage
+      var start = performance.now();
+      var num = document.getElementById('pl-num');
+      var bar = el.querySelector('.pl__bar');
+      var loaded = document.readyState === 'complete';
+      var finished = false;
+      window.addEventListener('load', function () { loaded = true; });
+
+      function finish() {
+        if (finished) return;
+        finished = true;
+        num.textContent = '100';
+        bar.style.transform = 'scaleX(1)';
+        try { localStorage.setItem('portfolio:visited', '1'); } catch (e) {}
+        setTimeout(function () {
+          el.className += ' is-done';
+          root.className = root.className.replace('is-loading', '').replace(/\s+/g, ' ');
+          el.setAttribute('aria-hidden', 'true');
+          setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 1600);
+        }, 350);
+      }
+
+      function frame(now) {
+        if (finished) return;
+        var elapsed = now - start;
+        var t = Math.min(elapsed / minMs, 1);
+        var eased = 1 - Math.pow(1 - t, 3);
+        // Hold at 99% until the page has really finished loading.
+        var pct = Math.round(eased * 100);
+        if (!loaded && elapsed < maxMs) pct = Math.min(pct, 99);
+        num.textContent = pct;
+        bar.style.transform = 'scaleX(' + pct / 100 + ')';
+        if (t >= 1 && (loaded || elapsed >= maxMs)) return finish();
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+
+      // Skippable: click, tap or any key.
+      function skip() { minMs = 0; }
+      el.addEventListener('click', skip);
+      document.addEventListener('keydown', skip, { once: true });
+    })();
+  </script>
+</body>
+</html>

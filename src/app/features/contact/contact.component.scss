@@ -1,0 +1,211 @@
+@use '../../../styles/mixins' as m;
+
+:host {
+  display: block;
+}
+
+// Dark diagonal gradient, violet → void (Plan.md §2.1 CTA spec).
+.contact {
+  background: var(--gradient-cta);
+}
+
+.contact__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); // never let long content widen the column
+  gap: var(--space-6);
+  align-items: start;
+
+  @include m.bp-up(960px) {
+    grid-template-columns: 1fr 1.05fr;
+    gap: var(--space-8);
+  }
+}
+
+.contact__lead {
+  max-width: 30rem;
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--ink) 88%, transparent);
+}
+
+.contact__links {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+}
+
+.contact__link {
+  overflow-wrap: anywhere;
+  font-weight: 500;
+  border-bottom: 1px solid var(--glass-border);
+  transition: border-color var(--dur-fast);
+
+  &:hover {
+    border-color: var(--brand-cyan);
+  }
+}
+
+// ---------- Form ----------
+.form {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.field {
+  display: grid;
+  gap: 0.5rem;
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    border: 1px solid var(--glass-border);
+    background: rgba(5, 6, 10, 0.55);
+    color: var(--ink);
+    font: inherit;
+    transition:
+      border-color var(--dur-fast),
+      box-shadow var(--dur-fast);
+
+    &::placeholder {
+      color: var(--ink-muted);
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: var(--brand-cyan);
+      box-shadow: 0 0 0 2px var(--brand-cyan);
+    }
+
+    &[aria-invalid='true'] {
+      border-color: #ff6b6b;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 8rem;
+  }
+}
+
+.field__error {
+  font-size: 0.85rem;
+  color: #ff9a9a;
+}
+
+// Honeypot: off-screen rather than display:none so naive bots still fill it.
+.hp {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.form__actions {
+  display: flex;
+}
+
+.form__status {
+  min-height: 0;
+}
+
+.notice {
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  font-size: 0.95rem;
+
+  &--ok {
+    background: color-mix(in srgb, #2ecc71 16%, transparent);
+    border: 1px solid color-mix(in srgb, #2ecc71 50%, transparent);
+    color: #b9f3cf;
+  }
+
+  &--error {
+    background: color-mix(in srgb, #ff6b6b 16%, transparent);
+    border: 1px solid color-mix(in srgb, #ff6b6b 50%, transparent);
+    color: #ffc2c2;
+  }
+}
+
+// ---------- WhatsApp chat button ----------
+.wa {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  margin-top: var(--space-3);
+  padding: 0.95rem 1.5rem;
+  border-radius: var(--radius-pill);
+  // Deep WhatsApp green so white text keeps AA contrast.
+  background: #0e7c66;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 8px 28px rgba(14, 124, 102, 0.4);
+  transition:
+    transform var(--dur-med) var(--ease-out),
+    box-shadow var(--dur-med) var(--ease-out),
+    background var(--dur-fast);
+
+  &:hover {
+    background: #0a6a56;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 34px rgba(14, 124, 102, 0.55);
+  }
+}
+
+@include m.reduced-motion {
+  .wa:hover {
+    transform: none;
+  }
+}
+
+.contact__stack {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.contact__sub {
+  padding-block: 0.25rem;
+  font-size: 0.8rem;
+  color: color-mix(in srgb, var(--ink) 75%, transparent);
+
+  &:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+}
+
+.notice__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 0.6rem;
+}
+
+.notice__link {
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, #2ecc71 25%, transparent);
+  border: 1px solid color-mix(in srgb, #2ecc71 60%, transparent);
+  font-weight: 600;
+  color: #e6ffef;
+
+  &:hover {
+    background: color-mix(in srgb, #2ecc71 40%, transparent);
+  }
+}

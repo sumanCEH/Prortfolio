@@ -1,0 +1,57 @@
+<section id="work" class="section work" aria-labelledby="work-title">
+  <div class="container">
+    <app-section-heading eyebrow="Work" title="Highlights from the field" headingId="work-title" />
+
+    <div class="work__grid">
+      @for (p of projects; track p.id; let i = $index) {
+        <app-glass-card
+          class="card"
+          [class.card--flagship]="p.id === 'ghcp-accelerator'"
+          [class.card--wide]="!p.diagram"
+          appReveal
+          [revealDelay]="(i % 2) * 0.1"
+        >
+          <article class="card__inner" [attr.aria-labelledby]="'work-' + p.id">
+            <div class="card__main">
+              <header class="card__head">
+                <p class="card__org">{{ p.org }}</p>
+                @if (p.badge) {
+                  <p class="card__badge"><span aria-hidden="true">🏆</span> {{ p.badge }}</p>
+                }
+              </header>
+
+              <h3 class="card__title" [id]="'work-' + p.id">{{ p.title }}</h3>
+
+              @if (p.metric; as m) {
+                <p class="metric" [class.metric--hero]="p.id === 'ghcp-accelerator'">
+                  <app-count-up class="metric__value" [value]="m.value" [suffix]="m.suffix" />
+                  <span class="metric__label">{{ m.label }}</span>
+                </p>
+              }
+            </div>
+
+            <div class="card__side">
+              <p class="card__desc">{{ p.description }}</p>
+
+              @if (p.diagram; as d) {
+                <div class="card__visual" [class.card__visual--run]="p.visual === 'pipeline'">
+                  @if (p.visual === 'pipeline') {
+                    <app-pipeline-run [steps]="d" [label]="flowLabel(p.title, d)" />
+                  } @else {
+                    <app-flow-diagram [nodes]="d" [label]="flowLabel(p.title, d)" />
+                  }
+                </div>
+              }
+
+              <ul class="card__tags" aria-label="Technologies">
+                @for (t of p.tags; track t) {
+                  <li>{{ t }}</li>
+                }
+              </ul>
+            </div>
+          </article>
+        </app-glass-card>
+      }
+    </div>
+  </div>
+</section>

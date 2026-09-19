@@ -1,0 +1,140 @@
+// Design tokens — "Cloud Circuit" palette. Source: Plan.md §2.1–2.3.
+// Everything here is exposed as CSS custom properties so components can read
+// them at runtime (and so a future light/dark switch is a one-file change).
+
+// ---------- Self-hosted fonts (variable, latin subset) ----------
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/assets/fonts/space-grotesk-latin-wght-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/assets/fonts/inter-latin-wght-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('/assets/fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2');
+}
+
+// Metric-matched fallbacks: while the web font loads, the system font is scaled to
+// occupy the same space, so the swap causes no layout shift (values from @capsizecss/metrics).
+@font-face {
+  font-family: 'Space Grotesk Fallback';
+  src: local('Arial');
+  size-adjust: 109.69%;
+  ascent-override: 89.71%;
+  descent-override: 26.62%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  size-adjust: 107.12%;
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono Fallback';
+  src: local('Courier New');
+  size-adjust: 99.98%;
+  ascent-override: 102.02%;
+  descent-override: 30%;
+  line-gap-override: 0%;
+}
+
+:root {
+  // ---------- 2.1 Colour ----------
+  --bg-void: #05060a;
+  --bg-elevated: #0d1020;
+  --surface-light: #f5f6fa;
+  --ink: #edeff7;
+  --ink-muted: #9aa0b4;
+  --ink-dark: #0b0c14;
+  --ink-dark-muted: #4a5068;
+
+  --brand-blue: #2e6bff;
+  --brand-cyan: #22d3ee;
+  --brand-violet: #7c5cff;
+  --brand-amber: #ff8a3d;
+  // Deeper blue for text/links on light sections (>= 4.5:1 on --surface-light).
+  --brand-blue-on-light: #1f54d6;
+
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-fill: rgba(255, 255, 255, 0.04);
+
+  // Gradients
+  --gradient-brand: linear-gradient(135deg, var(--brand-blue), var(--brand-violet));
+  // Slightly deeper violet end so white button text meets WCAG AA (>= 4.5:1).
+  --gradient-button: linear-gradient(135deg, #2e6bff, #6a4cf0);
+  --gradient-hero-glow: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--brand-blue) 40%, transparent),
+    color-mix(in srgb, var(--brand-violet) 30%, transparent) 55%,
+    transparent 100%
+  );
+  // Violet is mixed toward the void so small text on the top-left stays >= 4.5:1.
+  --gradient-cta: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--brand-violet) 72%, var(--bg-void)) 0%,
+    var(--bg-void) 70%
+  );
+
+  // ---------- 2.2 Typography ----------
+  --font-display: 'Space Grotesk', 'Space Grotesk Fallback', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'JetBrains Mono Fallback', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --fs-eyebrow: 0.75rem;
+  --fs-body: 1rem;
+  --fs-lead: 1.25rem;
+  --fs-h3: 1.5rem;
+  --fs-h2: clamp(1.9rem, 4vw, 2.5rem);
+  --fs-hero: clamp(3.5rem, 9vw, 8rem);
+
+  --tracking-eyebrow: 0.16em;
+  --tracking-tight: -0.03em;
+
+  // ---------- 2.3 Spacing / radius / elevation ----------
+  --space-1: 0.5rem; // 8
+  --space-2: 1rem; // 16
+  --space-3: 1.5rem; // 24
+  --space-4: 2rem; // 32
+  --space-6: 3rem; // 48
+  --space-8: 4rem; // 64
+  --space-12: 6rem; // 96
+  --space-16: 8rem; // 128
+
+  --radius-pill: 999px;
+  --radius-card: 20px;
+  --radius-image: 16px;
+
+  --glow-blue: 0 0 60px rgba(46, 107, 255, 0.25);
+  --glow-violet: 0 0 60px rgba(124, 92, 255, 0.25);
+
+  // ---------- Layout ----------
+  --nav-height: 72px;
+  --content-max: 1200px;
+  --gutter: clamp(1rem, 5vw, 2.5rem);
+
+  // Section scroll offset so anchors are not hidden behind the sticky nav.
+  --scroll-offset: calc(var(--nav-height) + 8px);
+
+  // ---------- Motion ----------
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 180ms;
+  --dur-med: 360ms;
+}

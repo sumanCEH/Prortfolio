@@ -1,0 +1,40 @@
+@use '../../../styles/mixins' as m;
+
+:host {
+  display: block;
+}
+
+.education {
+  padding-top: var(--space-4); // continues straight on from the awards above
+  background: linear-gradient(180deg, var(--bg-void), var(--bg-elevated));
+}
+
+.education__grid {
+  display: grid;
+  gap: var(--space-3);
+
+  @include m.bp-up(700px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.edu__year {
+  width: fit-content;
+  margin-bottom: var(--space-2);
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-fill);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.edu__degree {
+  font-size: 1.25rem;
+}
+
+.edu__school {
+  margin-top: 0.4rem;
+  color: var(--brand-cyan);
+  font-weight: 500;
+}

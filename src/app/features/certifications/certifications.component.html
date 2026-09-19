@@ -1,0 +1,50 @@
+<section id="certifications" class="section certs" aria-labelledby="certs-title">
+  <div class="container">
+    <app-section-heading eyebrow="Certifications" title="Credentials that back it up" headingId="certs-title" />
+
+    <ul class="certs__grid" aria-label="Certifications">
+      @for (c of certs; track c.code; let i = $index) {
+        <li class="cert" appReveal [revealDelay]="(i % 3) * 0.07">
+          <span class="cert__code">{{ c.code }}</span>
+          <span class="cert__name">{{ c.name }}</span>
+          @if (c.url) {
+            <a
+              class="proof-link"
+              [href]="c.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              [attr.aria-label]="'View ' + c.name + ' credential (opens in a new tab)'"
+            >
+              View credential <span aria-hidden="true">↗</span>
+            </a>
+          }
+        </li>
+      }
+    </ul>
+
+    <div class="awards">
+      <h3 class="awards__title" appReveal>Awards &amp; Recognition</h3>
+      <ul class="awards__grid">
+        @for (a of awards; track a.title; let i = $index) {
+          <li appReveal [revealDelay]="i * 0.1">
+            <app-glass-card>
+              <p class="award__title"><span aria-hidden="true">✦</span> {{ a.title }}</p>
+              <p class="award__detail">{{ a.detail }}</p>
+              @if (a.url) {
+                <a
+                  class="proof-link"
+                  [href]="a.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  [attr.aria-label]="'View ' + a.title + ' on LinkedIn (opens in a new tab)'"
+                >
+                  View on LinkedIn <span aria-hidden="true">↗</span>
+                </a>
+              }
+            </app-glass-card>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,33 @@
+@use '../../../styles/mixins' as m;
+
+:host {
+  display: block;
+  margin-bottom: var(--space-6);
+}
+
+.sh {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.sh__eyebrow {
+  @include m.eyebrow;
+  color: var(--brand-cyan);
+}
+
+.sh__title {
+  font-size: var(--fs-h2);
+  font-weight: 700;
+}
+
+// On light sections the cyan eyebrow would fail contrast; use the deeper blue.
+:host(.section-heading--light) .sh__eyebrow {
+  color: var(--brand-blue-on-light);
+}
+
+// On the violet CTA gradient, cyan eyebrow text is too close in luminance; use plain ink.
+:host(.section-heading--violet) .sh__eyebrow {
+  color: var(--ink);
+}

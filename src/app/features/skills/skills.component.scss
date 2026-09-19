@@ -1,0 +1,372 @@
+@use '../../../styles/mixins' as m;
+
+:host {
+  display: block;
+}
+
+// Stack: orbit banner on top, evenly sized skill cards below.
+.skills__layout {
+  display: grid;
+  gap: var(--space-4);
+}
+
+// ---------- Showcase panel: intro on the left, orbit of brand logos on the right ----------
+.showcase {
+  --r-inner: 72px;
+  --r-outer: 152px;
+  --tile: 56px;
+  --spin: 48s;
+  display: grid;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-6);
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid rgba(11, 12, 20, 0.08);
+  // Soft glow over a fine dot grid on white.
+  background:
+    radial-gradient(ellipse 45% 70% at 72% 50%, rgba(46, 107, 255, 0.13), transparent 70%),
+    radial-gradient(rgba(11, 12, 20, 0.09) 1px, transparent 1px) 0 0 / 22px 22px,
+    #fff;
+  box-shadow: 0 16px 40px rgba(46, 107, 255, 0.07);
+
+  @include m.bp-up(900px) {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-8);
+  }
+
+  @include m.bp-down(900px) {
+    padding: var(--space-4) var(--space-3);
+    text-align: center;
+    justify-items: center;
+  }
+
+  @include m.bp-down(560px) {
+    --r-inner: 46px;
+    --r-outer: 106px;
+    --tile: 42px;
+  }
+}
+
+.showcase__copy {
+  max-width: 30rem;
+}
+
+.showcase__eyebrow {
+  @include m.eyebrow;
+  color: var(--brand-blue-on-light);
+}
+
+.showcase__title {
+  margin-top: 0.6rem;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 700;
+}
+
+.showcase__text {
+  margin-top: var(--space-2);
+  color: var(--ink-dark-muted);
+  line-height: 1.65;
+}
+
+.showcase__stats {
+  display: flex;
+  gap: var(--space-4);
+  margin: var(--space-4) 0 0;
+
+  @include m.bp-down(900px) {
+    justify-content: center;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.15rem;
+  }
+
+  dt {
+    font-size: 0.8rem;
+    color: var(--ink-dark-muted);
+  }
+
+  dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    background: var(--gradient-button);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+// ---------- Orbit of brand logos (pure CSS, 2D transforms, no WebGL) ----------
+// Two concentric rings turn in opposite directions. Each logo tile is
+// counter-rotated by the same amount, so logos always stay upright.
+.orbit {
+  display: grid;
+  place-items: center;
+}
+
+.orbit__stage {
+  position: relative;
+  width: calc(var(--r-outer) * 2 + var(--tile));
+  aspect-ratio: 1;
+}
+
+// Faint guide circles marking each orbit.
+.orbit__guide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  border: 1px dashed rgba(31, 84, 214, 0.22);
+  translate: -50% -50%;
+
+  &--inner {
+    width: calc(var(--r-inner) * 2);
+    aspect-ratio: 1;
+  }
+  &--outer {
+    width: calc(var(--r-outer) * 2);
+    aspect-ratio: 1;
+    border-color: rgba(11, 12, 20, 0.12);
+  }
+}
+
+// A ring is a zero-size box at the centre that spins; slots hang off it.
+.ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  animation: orbit-spin var(--spin) linear infinite;
+
+  &--inner {
+    --r: var(--r-inner);
+  }
+  &--outer {
+    --r: var(--r-outer);
+    animation-direction: reverse;
+    animation-duration: calc(var(--spin) * 1.4);
+  }
+}
+
+// Place each logo on the circle by its angle.
+.slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(var(--a)) translateY(calc(var(--r) * -1));
+}
+
+.tile {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: var(--tile);
+  height: var(--tile);
+  translate: -50% -50%;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid rgba(11, 12, 20, 0.08);
+  box-shadow:
+    0 10px 24px rgba(11, 12, 20, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+  // Undo the slot angle, then keep undoing the ring's spin (same duration, opposite way).
+  transform: rotate(calc(var(--a) * -1));
+  animation: orbit-upright calc(var(--spin)) linear infinite;
+  transition:
+    scale var(--dur-med) var(--ease-out),
+    box-shadow var(--dur-med) var(--ease-out);
+
+  img {
+    width: 58%;
+    height: 58%;
+    object-fit: contain;
+  }
+
+  // Name appears on hover, since the logos carry no text.
+  &::after {
+    content: attr(data-name);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    padding: 0.25rem 0.6rem;
+    border-radius: 8px;
+    background: var(--ink-dark);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    white-space: nowrap;
+    translate: -50% 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity var(--dur-fast),
+      translate var(--dur-fast) var(--ease-out);
+  }
+
+  &:hover {
+    scale: 1.12;
+    box-shadow:
+      0 14px 30px rgba(46, 107, 255, 0.28),
+      0 1px 0 rgba(255, 255, 255, 0.9) inset;
+
+    &::after {
+      opacity: 1;
+      translate: -50% 0;
+    }
+  }
+}
+
+.ring--outer .tile {
+  animation-direction: reverse;
+  animation-duration: calc(var(--spin) * 1.4);
+}
+
+.orbit__core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--gradient-button);
+  color: #fff;
+  translate: -50% -50%;
+  box-shadow:
+    0 0 0 8px rgba(46, 107, 255, 0.1),
+    0 0 40px rgba(46, 107, 255, 0.45);
+
+  @include m.bp-down(560px) {
+    width: 52px;
+    height: 52px;
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+}
+
+// Hovering anywhere pauses the whole orbit so a logo can be read.
+.orbit:hover {
+  .ring,
+  .tile {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Counter-rotation must start from the tile's resting angle (-a) and turn -360deg.
+@keyframes orbit-upright {
+  from {
+    transform: rotate(calc(var(--a) * -1));
+  }
+  to {
+    transform: rotate(calc(var(--a) * -1 - 360deg));
+  }
+}
+
+@include m.reduced-motion {
+  .ring,
+  .tile {
+    animation: none;
+  }
+}
+
+// ---------- Skill groups ----------
+// Uniform cards on an even grid: same padding, same header, rows stretch to match.
+.skills__groups {
+  display: grid;
+  gap: var(--space-2);
+
+  @include m.bp-up(640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-card);
+  background: #fff;
+  border: 1px solid rgba(11, 12, 20, 0.08);
+  box-shadow: 0 10px 30px rgba(46, 107, 255, 0.05);
+  transition:
+    border-color var(--dur-med) var(--ease-out),
+    box-shadow var(--dur-med) var(--ease-out);
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--brand-blue) 40%, transparent);
+    box-shadow: 0 14px 36px rgba(46, 107, 255, 0.12);
+  }
+}
+
+.group__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-1);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid rgba(11, 12, 20, 0.08);
+}
+
+.group__title {
+  @include m.eyebrow;
+  font-family: var(--font-body);
+  line-height: 1.4;
+  color: var(--brand-blue-on-light);
+}
+
+.group__count {
+  flex: none;
+  min-width: 1.6rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-pill);
+  background: rgba(31, 84, 214, 0.08);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--brand-blue-on-light);
+}
+
+.group__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 0.5rem;
+}
+
+.chip {
+  padding: 0.4rem 0.8rem;
+  border-radius: 10px;
+  background: var(--surface-light);
+  border: 1px solid rgba(11, 12, 20, 0.08);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink-dark);
+  transition:
+    border-color var(--dur-fast),
+    background var(--dur-fast);
+
+  &:hover {
+    border-color: var(--brand-blue);
+    background: #fff;
+  }
+}

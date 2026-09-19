@@ -1,0 +1,243 @@
+@use '../../../styles/mixins' as m;
+
+:host {
+  display: block;
+}
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: calc(100vh - var(--nav-height));
+  min-height: calc(100svh - var(--nav-height));
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--bg-void);
+}
+
+// ---------- Glow background (radial blue → violet) ----------
+.hero__glow {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  background: var(--gradient-hero-glow);
+  filter: blur(30px);
+  pointer-events: none;
+
+  &--a {
+    width: min(90vw, 980px);
+    aspect-ratio: 1;
+    right: -18%;
+    top: -28%;
+    opacity: 0.85;
+  }
+
+  &--b {
+    width: min(60vw, 640px);
+    aspect-ratio: 1;
+    left: -14%;
+    bottom: -30%;
+    opacity: 0.5;
+  }
+}
+
+// ---------- Crosshair corner marks ----------
+.hero__mark {
+  position: absolute;
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  opacity: 0.4;
+  pointer-events: none;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background: var(--ink);
+  }
+  &::before {
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+  }
+  &::after {
+    top: 50%;
+    left: 0;
+    height: 1px;
+    width: 100%;
+  }
+
+  &--tl {
+    top: 20px;
+    left: 20px;
+  }
+  &--tr {
+    top: 20px;
+    right: 20px;
+  }
+  &--bl {
+    bottom: 20px;
+    left: 20px;
+  }
+  &--br {
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+// ---------- Copy ----------
+.hero__inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  align-items: center;
+  padding-block: var(--space-8);
+}
+
+.hero__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: 46rem;
+}
+
+.hero__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-pill);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.hero__dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand-amber);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--brand-amber);
+    animation: hero-pulse 1.8s ease-out infinite;
+  }
+}
+
+@keyframes hero-pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+.hero__name {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--fs-hero);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+}
+
+.hero__last {
+  width: fit-content;
+  background: linear-gradient(100deg, var(--ink) 10%, var(--brand-cyan) 55%, var(--brand-violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero__role {
+  font-family: var(--font-display);
+  font-size: var(--fs-lead);
+  font-weight: 500;
+  color: var(--brand-cyan);
+}
+
+.hero__value {
+  max-width: 34rem;
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+// ---------- Photo layout (enabled when profile.photoUrl is set) ----------
+.hero__photo {
+  display: none;
+}
+
+.hero--photo {
+  .hero__inner {
+    @include m.bp-up(900px) {
+      grid-template-columns: 1.2fr 1fr;
+      gap: var(--space-6);
+    }
+  }
+
+  .hero__photo {
+    display: block;
+    justify-self: center;
+
+    img {
+      width: min(100%, 420px);
+      height: auto;
+      border-radius: var(--radius-image);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glow-violet);
+    }
+  }
+
+  // Cluster shrinks to a corner accent behind the portrait.
+  app-hero-scene {
+    inset: auto 2% 4% auto;
+    width: 260px;
+    height: 260px;
+    opacity: 0.9;
+  }
+}
+
+// ---------- Mobile: scene on top, copy below ----------
+@include m.bp-down(900px) {
+  .hero {
+    align-items: flex-end;
+  }
+
+  .hero:not(.hero--photo) app-hero-scene {
+    inset: 0 0 auto 0;
+    height: 46%;
+  }
+
+  .hero:not(.hero--photo) .hero__inner {
+    padding-top: 46vh;
+    padding-bottom: var(--space-6);
+  }
+
+  .hero__mark--bl,
+  .hero__mark--br {
+    display: none;
+  }
+}

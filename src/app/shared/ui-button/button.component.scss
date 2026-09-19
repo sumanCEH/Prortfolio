@@ -1,0 +1,154 @@
+@use '../../../styles/mixins' as m;
+
+:host {
+  display: inline-block;
+}
+
+// The zone is the "small radius" around the button where the magnet is active.
+// Negative margin cancels the padding so layout is unchanged.
+.app-button__zone {
+  display: inline-block;
+  padding: 18px;
+  margin: -18px;
+}
+
+.app-button__control {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  overflow: hidden; // clips the ripple only; box-shadow glow still renders outside
+  border: 0;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  color: #fff;
+  // `scale` is an independent property, so it composes with GSAP's x/y transform.
+  transition:
+    scale var(--dur-med) var(--ease-out),
+    box-shadow var(--dur-med) var(--ease-out),
+    background var(--dur-med),
+    border-color var(--dur-med),
+    color var(--dur-fast);
+
+  &:focus-visible {
+    @include m.focus-ring;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.app-button__label {
+  position: relative;
+  z-index: 1;
+}
+
+// ---------- Primary ----------
+:host(.app-button--primary) .app-button__control {
+  padding: 1.05rem 1.9rem;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-button);
+  box-shadow: 0 6px 24px rgba(46, 107, 255, 0.3);
+
+  &:hover:not(:disabled) {
+    scale: 1.04;
+    box-shadow:
+      0 0 36px rgba(46, 107, 255, 0.55),
+      0 0 90px rgba(124, 92, 255, 0.35);
+  }
+}
+
+// ---------- Ghost ----------
+:host(.app-button--ghost) .app-button__control {
+  padding: 1.05rem 1.9rem;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--glass-border);
+  color: var(--ink);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--brand-blue) 22%, transparent),
+      color-mix(in srgb, var(--brand-violet) 22%, transparent)
+    );
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand-cyan) 45%, transparent);
+  }
+}
+
+// ---------- Icon ----------
+:host(.app-button--icon) .app-button__control {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--glass-fill);
+  box-shadow: inset 0 0 0 1px var(--glass-border);
+  color: var(--ink);
+
+  &:hover:not(:disabled) {
+    scale: 1.06;
+    background: color-mix(in srgb, var(--brand-blue) 25%, transparent);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--brand-cyan) 50%, transparent),
+      var(--glow-blue);
+  }
+}
+
+.app-button__arrow {
+  transition: transform var(--dur-med) var(--ease-out);
+}
+
+:host(.app-button--icon) .app-button__control:hover .app-button__arrow {
+  transform: rotate(-45deg); // → becomes ↗
+}
+
+// ---------- Ripple (element is created at click time, so it is unscoped) ----------
+:host ::ng-deep .app-button__ripple {
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(0);
+  pointer-events: none;
+  animation: app-button-ripple 650ms var(--ease-out) forwards;
+}
+
+@keyframes app-button-ripple {
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+// ---------- Reduced motion: colour transitions only ----------
+@include m.reduced-motion {
+  .app-button__control {
+    transition:
+      background var(--dur-fast),
+      border-color var(--dur-fast),
+      color var(--dur-fast);
+
+    &:hover:not(:disabled) {
+      scale: none !important;
+    }
+  }
+
+  .app-button__arrow {
+    transition: none;
+  }
+
+  :host(.app-button--icon) .app-button__control:hover .app-button__arrow {
+    transform: none;
+  }
+
+  :host ::ng-deep .app-button__ripple {
+    display: none;
+  }
+}

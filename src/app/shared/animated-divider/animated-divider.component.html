@@ -1,0 +1,16 @@
+<svg
+  class="divider"
+  viewBox="0 0 240 6"
+  preserveAspectRatio="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <linearGradient [attr.id]="gradId" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="240" y2="0">
+      <stop offset="0" stop-color="#2e6bff" />
+      <stop offset="0.55" stop-color="#7c5cff" />
+      <stop offset="1" stop-color="#22d3ee" />
+    </linearGradient>
+  </defs>
+  <path #path d="M0 3 H240" pathLength="1" [attr.stroke]="'url(#' + gradId + ')'" stroke-width="2" fill="none" stroke-linecap="round" />
+</svg>

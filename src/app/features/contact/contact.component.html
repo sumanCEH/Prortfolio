@@ -1,0 +1,141 @@
+<section id="contact" class="section contact" aria-labelledby="contact-title">
+  <div class="container contact__layout">
+    <div class="contact__intro">
+      <app-section-heading eyebrow="Contact" title="Let's build something reliable" headingId="contact-title" tone="violet" />
+      <p class="contact__lead" appReveal>
+        Open to new roles and interesting problems. Send a note and I'll get back to you.
+      </p>
+
+      @if (whatsappHref; as wa) {
+        <a class="wa" [href]="wa" target="_blank" rel="noopener noreferrer" appReveal>
+          <app-icon name="whatsapp" />
+          <span>Chat on WhatsApp</span>
+        </a>
+      }
+
+      @if (mailto() || contact.linkedin || contact.github || phones.length) {
+        <ul class="contact__links" aria-label="Direct contact links" appReveal>
+          @if (mailto(); as href) {
+            <li>
+              <app-button variant="icon" [href]="href" label="Email Suman"><app-icon name="mail" /></app-button>
+              <span class="contact__stack">
+                <a class="contact__link" [href]="href">{{ contact.email }}</a>
+                <a
+                  class="contact__sub"
+                  [href]="'https://mail.google.com/mail/?view=cm&fs=1&to=' + contact.email"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  or open in Gmail
+                </a>
+              </span>
+            </li>
+          }
+          @for (p of phones; track p.href) {
+            <li>
+              <app-button variant="icon" [href]="p.href" [label]="'Call ' + p.label"><app-icon name="phone" /></app-button>
+              <a class="contact__link" [href]="p.href">{{ p.label }}</a>
+            </li>
+          }
+          @if (contact.linkedin) {
+            <li>
+              <app-button variant="icon" [href]="contact.linkedin" label="Suman on LinkedIn">
+                <app-icon name="linkedin" />
+              </app-button>
+              <a class="contact__link" [href]="contact.linkedin" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            </li>
+          }
+          @if (contact.github) {
+            <li>
+              <app-button variant="icon" [href]="contact.github" label="Suman on GitHub"><app-icon name="github" /></app-button>
+              <a class="contact__link" [href]="contact.github" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <app-glass-card class="contact__card" appReveal>
+      <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="field">
+          <label for="c-name">Name</label>
+          <input
+            id="c-name"
+            type="text"
+            formControlName="name"
+            autocomplete="name"
+            [attr.aria-invalid]="fieldError('name') ? 'true' : null"
+            [attr.aria-describedby]="fieldError('name') ? 'c-name-error' : null"
+          />
+          @if (fieldError('name'); as msg) {
+            <p class="field__error" id="c-name-error" role="alert">{{ msg }}</p>
+          }
+        </div>
+
+        <div class="field">
+          <label for="c-email">Email</label>
+          <input
+            id="c-email"
+            type="email"
+            formControlName="email"
+            autocomplete="email"
+            [attr.aria-invalid]="fieldError('email') ? 'true' : null"
+            [attr.aria-describedby]="fieldError('email') ? 'c-email-error' : null"
+          />
+          @if (fieldError('email'); as msg) {
+            <p class="field__error" id="c-email-error" role="alert">{{ msg }}</p>
+          }
+        </div>
+
+        <div class="field">
+          <label for="c-message">Message</label>
+          <textarea
+            id="c-message"
+            rows="5"
+            formControlName="message"
+            [attr.aria-invalid]="fieldError('message') ? 'true' : null"
+            [attr.aria-describedby]="fieldError('message') ? 'c-message-error' : null"
+          ></textarea>
+          @if (fieldError('message'); as msg) {
+            <p class="field__error" id="c-message-error" role="alert">{{ msg }}</p>
+          }
+        </div>
+
+        <!-- Honeypot: hidden from people and assistive tech, tempting to bots. -->
+        <div class="hp" aria-hidden="true">
+          <label for="c-website">Website</label>
+          <input id="c-website" type="text" formControlName="website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="form__actions">
+          <app-button type="submit" [disabled]="sending()">
+            {{ sending() ? 'Sending…' : 'Send message' }}
+          </app-button>
+        </div>
+
+        <!-- Always in the DOM so screen readers announce changes reliably. -->
+        <div class="form__status" role="status" aria-live="polite">
+          @switch (status()) {
+            @case ('success') {
+              <p class="notice notice--ok">Thanks! Your message is on its way. I'll reply soon.</p>
+            }
+            @case ('error') {
+              <p class="notice notice--error">{{ errorText() }}</p>
+            }
+            @case ('fallback') {
+              @if (fallbackLinks(); as links) {
+                <div class="notice notice--ok">
+                  <p>Your message is ready. Choose how to send it:</p>
+                  <p class="notice__actions">
+                    <a class="notice__link" [href]="links.mailto">Open my email app</a>
+                    <a class="notice__link" [href]="links.gmail" target="_blank" rel="noopener noreferrer">Open Gmail</a>
+                  </p>
+                </div>
+              }
+            }
+          }
+        </div>
+      </form>
+    </app-glass-card>
+  </div>
+</section>

@@ -1,0 +1,36 @@
+<ng-template #diagram let-l let-cls="cls">
+  <svg [attr.viewBox]="'0 0 ' + l.w + ' ' + l.h" [class]="cls" aria-hidden="true" focusable="false">
+    <!-- The route the request takes, drawn behind the nodes. -->
+    <path class="route" [attr.d]="l.path" />
+
+    <!-- Dot travels BEHIND the opaque nodes, so it appears to hop between them and never covers text. -->
+    @if (animate()) {
+      <g>
+        <circle class="halo" r="10">
+          <animateMotion [attr.path]="l.path" dur="9s" repeatCount="indefinite" />
+        </circle>
+        <circle class="dot" r="4">
+          <animateMotion [attr.path]="l.path" dur="9s" repeatCount="indefinite" />
+        </circle>
+      </g>
+    }
+
+    @for (b of l.boxes; track b.label) {
+      <g>
+        <rect class="box" [attr.x]="b.x" [attr.y]="b.y" [attr.width]="l.boxW" [attr.height]="l.boxH" rx="12" />
+        <text class="label" [attr.x]="b.x + l.boxW / 2" [attr.y]="b.y + (b.sub.length ? 26 : l.boxH / 2 + 5)" text-anchor="middle">
+          {{ b.label }}
+        </text>
+        @for (s of b.sub; track s; let i = $index) {
+          <text class="sub" [attr.x]="b.x + l.boxW / 2" [attr.y]="b.y + 44 + i * 13" text-anchor="middle">{{ s }}</text>
+        }
+      </g>
+    }
+
+  </svg>
+</ng-template>
+
+<figure class="flow" role="img" [attr.aria-label]="label()">
+  <ng-container *ngTemplateOutlet="diagram; context: { $implicit: horizontal(), cls: 'flow__svg flow__svg--h' }" />
+  <ng-container *ngTemplateOutlet="diagram; context: { $implicit: vertical(), cls: 'flow__svg flow__svg--v' }" />
+</figure>

@@ -1,0 +1,100 @@
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav" [class.nav--open]="menuOpen()">
+  <nav class="nav__inner container" aria-label="Primary">
+    <a class="nav__brand" href="#hero" (click)="closeMenu()">
+      <span class="nav__mark" aria-hidden="true">S</span>
+      <span class="nav__name">{{ cv.profile.name }}</span>
+    </a>
+
+    <button
+      #toggleBtn
+      type="button"
+      class="nav__toggle"
+      aria-controls="nav-menu"
+      [attr.aria-expanded]="menuOpen()"
+      [attr.aria-label]="menuOpen() ? 'Close menu' : 'Open menu'"
+      (click)="toggleMenu()"
+    >
+      <span class="nav__bar"></span>
+      <span class="nav__bar"></span>
+      <span class="nav__bar"></span>
+    </button>
+
+    <ul class="nav__links" id="nav-menu">
+      @for (link of links; track link.id) {
+        <li>
+          <a
+            class="nav__link"
+            [class.nav__link--active]="activeId() === link.id"
+            [attr.aria-current]="activeId() === link.id ? 'true' : null"
+            [href]="'#' + link.id"
+            (click)="closeMenu()"
+          >
+            {{ link.label }}
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+  <app-hero />
+  <app-about />
+  <app-experience />
+  <app-work />
+  <app-skills />
+  <app-certifications />
+  <app-education />
+  <app-contact />
+</main>
+
+<footer class="footer">
+  <div class="footer__inner container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <p class="footer__name">{{ cv.profile.name }}</p>
+        <p class="footer__role">{{ cv.profile.role }}</p>
+      </div>
+
+      <nav class="footer__nav" aria-label="Footer">
+        <ul>
+          @for (link of links; track link.id) {
+            <li><a [href]="'#' + link.id">{{ link.label }}</a></li>
+          }
+        </ul>
+      </nav>
+
+      @if (cv.contact.linkedin || cv.contact.github || cv.contact.email || cv.contact.whatsapp) {
+        <ul class="footer__social" aria-label="Social links">
+          @if (cv.contact.linkedin) {
+            <li>
+              <app-button variant="icon" [href]="cv.contact.linkedin" label="LinkedIn"><app-icon name="linkedin" /></app-button>
+            </li>
+          }
+          @if (cv.contact.github) {
+            <li>
+              <app-button variant="icon" [href]="cv.contact.github" label="GitHub"><app-icon name="github" /></app-button>
+            </li>
+          }
+          @if (cv.contact.whatsapp) {
+            <li>
+              <app-button variant="icon" [href]="'https://wa.me/' + cv.contact.whatsapp" label="Chat on WhatsApp"><app-icon name="whatsapp" /></app-button>
+            </li>
+          }
+          @if (cv.contact.email) {
+            <li>
+              <app-button variant="icon" [href]="'mailto:' + cv.contact.email" label="Email"><app-icon name="mail" /></app-button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <p class="footer__legal">
+      <span>&copy; {{ year }} {{ cv.profile.name }}. All rights reserved.</span>
+      <span>Built with Angular.</span>
+    </p>
+  </div>
+</footer>

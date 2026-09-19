@@ -1,0 +1,130 @@
+@use 'tokens';
+@use 'mixins' as m;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  // Native smooth scroll; disabled below for reduced-motion users.
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--scroll-offset);
+  -webkit-text-size-adjust: 100%;
+  background: var(--bg-void);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg-void);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  line-height: 1.1;
+  letter-spacing: var(--tracking-tight);
+}
+
+h2 {
+  font-size: var(--fs-h2);
+}
+
+h3 {
+  font-size: var(--fs-h3);
+}
+
+p {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  @include m.focus-ring;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--brand-violet) 55%, transparent);
+  color: #fff;
+}
+
+// Screen-reader-only utility, used across components.
+.sr-only {
+  @include m.sr-only;
+}
+
+.container {
+  @include m.container;
+}
+
+// Light section rhythm (About / Skills alternate against dark sections).
+.section--light {
+  background: var(--surface-light);
+  color: var(--ink-dark);
+}
+
+@include m.reduced-motion {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+// Shared section rhythm used by every feature section.
+// Fluid vertical rhythm: 64px on phones up to 96px on large screens.
+.section {
+  position: relative;
+  padding-block: clamp(var(--space-8), 4rem + 4vw, var(--space-12));
+}
+
+// Nicer line breaks: balanced headings, no single-word last lines in paragraphs.
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}

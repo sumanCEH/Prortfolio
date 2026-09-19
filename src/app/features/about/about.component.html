@@ -1,0 +1,18 @@
+<section id="about" class="section section--light about" aria-labelledby="about-title">
+  <div class="container">
+    <app-section-heading eyebrow="About" title="Building things that stay up" headingId="about-title" tone="light" />
+
+    <div class="about__grid">
+      <p class="about__summary" appReveal>{{ profile.summary }}</p>
+
+      <ul class="about__facts" aria-label="Quick facts">
+        @for (fact of facts; track fact.label; let i = $index) {
+          <li class="fact" appReveal [revealDelay]="i * 0.08">
+            <span class="fact__label">{{ fact.label }}</span>
+            <span class="fact__value">{{ fact.value }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>

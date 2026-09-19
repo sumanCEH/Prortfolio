@@ -1,0 +1,59 @@
+@use '../../../styles/mixins' as m;
+
+:host {
+  display: block;
+}
+
+.about__grid {
+  display: grid;
+  gap: var(--space-6);
+  align-items: start;
+
+  @include m.bp-up(900px) {
+    grid-template-columns: 1.15fr 1fr;
+    gap: var(--space-8);
+  }
+}
+
+.about__summary {
+  font-size: var(--fs-lead);
+  line-height: 1.65;
+  color: var(--ink-dark);
+  max-width: 40rem;
+}
+
+.about__facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+
+  // One column on very narrow phones so long values (like the relocation list) never overflow.
+  @include m.bp-down(420px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: var(--space-3);
+  border-radius: var(--radius-card);
+  background: #fff;
+  border: 1px solid rgba(11, 12, 20, 0.08);
+  box-shadow: 0 10px 30px rgba(46, 107, 255, 0.06);
+}
+
+.fact__label {
+  @include m.eyebrow;
+  color: var(--ink-dark-muted);
+}
+
+.fact__value {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink-dark);
+  overflow-wrap: anywhere;
+}

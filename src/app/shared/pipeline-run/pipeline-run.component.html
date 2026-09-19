@@ -1,0 +1,33 @@
+<figure class="run" role="img" [attr.aria-label]="label()">
+  <div class="run__head" aria-hidden="true">
+    <span class="run__brand"><app-icon name="github" /> GitHub Actions</span>
+    <span class="run__status">
+      <span class="run__pill run__pill--running"><i></i> Running</span>
+      <span class="run__pill run__pill--success">Success</span>
+    </span>
+  </div>
+
+  <ol class="run__steps" aria-hidden="true">
+    @for (s of steps(); track s.label) {
+      <li class="step">
+        <span class="step__line"></span>
+        <span class="step__icon">
+          <span class="step__spinwrap">
+            <svg class="step__spin" viewBox="0 0 24 24" focusable="false">
+              <circle cx="12" cy="12" r="9" />
+            </svg>
+          </span>
+          <span class="step__check">
+            <svg viewBox="0 0 24 24" focusable="false"><path d="m6.5 12.5 3.6 3.6 7.4-7.6" /></svg>
+          </span>
+        </span>
+        <span class="step__text">
+          <span class="step__label">{{ s.label }}</span>
+          @if (s.sub?.length) {
+            <span class="step__sub">{{ s.sub!.join(' · ') }}</span>
+          }
+        </span>
+      </li>
+    }
+  </ol>
+</figure>

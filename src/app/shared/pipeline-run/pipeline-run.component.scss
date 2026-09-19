@@ -1,0 +1,363 @@
+@use '../../../styles/mixins' as m;
+
+:host {
+  display: block;
+}
+
+$max-steps: 6;
+$cycle: 11s;
+$green: #3fb950;
+
+.run {
+  --cycle: #{$cycle};
+  flex: 1; // fill the card in both directions (host is a flex box)
+  min-width: 0;
+  margin: 0;
+  border-radius: 14px;
+  background: #0d1020;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+// ---------- Header: workflow name + live status ----------
+.run__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1);
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.run__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink);
+
+  app-icon {
+    color: var(--ink-muted);
+  }
+}
+
+.run__status {
+  position: relative;
+  display: grid;
+}
+
+.run__pill {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 600;
+
+  &--running {
+    color: var(--brand-amber);
+    background: color-mix(in srgb, var(--brand-amber) 14%, transparent);
+    animation: run-pill-running var(--cycle) linear infinite;
+
+    i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: run-blink 1s ease-in-out infinite;
+    }
+  }
+
+  &--success {
+    color: $green;
+    background: color-mix(in srgb, $green 14%, transparent);
+    opacity: 0;
+    animation: run-pill-success var(--cycle) linear infinite;
+  }
+}
+
+// ---------- Steps ----------
+.run {
+  display: flex;
+  flex-direction: column;
+}
+
+.run__steps {
+  display: grid;
+  flex: 1;
+  grid-auto-rows: 1fr; // steps share spare height evenly when the card is taller
+  align-content: stretch;
+  margin: 0;
+  padding: 0.6rem 0.75rem 0.9rem;
+  list-style: none;
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.55rem 0.5rem;
+  border-radius: 10px;
+  animation: none var(--cycle) linear infinite;
+}
+
+// Connector between this step's icon and the next.
+.step__line {
+  position: absolute;
+  left: calc(0.5rem + 12px);
+  top: calc(50% + 13px); // just under this step's circle
+  width: 2px;
+  height: calc(100% - 26px); // ...down to just above the next one
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: $green;
+    transform-origin: top;
+    transform: scaleY(0);
+    animation: none var(--cycle) linear infinite;
+  }
+}
+
+.step:last-child .step__line {
+  display: none;
+}
+
+.step__icon {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.18); // idle ring
+}
+
+.step__spinwrap,
+.step__check {
+  position: absolute;
+  inset: -2px;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  animation: none var(--cycle) linear infinite;
+}
+
+.step__spin {
+  width: 26px;
+  height: 26px;
+  animation: run-rotate 0.8s linear infinite;
+
+  circle {
+    fill: none;
+    stroke: var(--brand-amber);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-dasharray: 14 43;
+  }
+}
+
+.step__check {
+  border-radius: 50%;
+  background: $green;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}
+
+.step__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.step__label {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.step__sub {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+}
+
+// ---------- Timeline: each step starts 12% later; the run then loops ----------
+@for $i from 0 through $max-steps - 1 {
+  $s: 4 + $i * 12; // percent of the cycle when this step starts running
+  $r: $s + 8; // ...and when it finishes
+
+  .step:nth-child(#{$i + 1}) {
+    animation-name: run-row-#{$i};
+
+    .step__spinwrap {
+      animation-name: run-spin-#{$i};
+    }
+    .step__check {
+      animation-name: run-check-#{$i};
+    }
+    .step__line::after {
+      animation-name: run-line-#{$i};
+    }
+  }
+
+  @keyframes run-row-#{$i} {
+    0%,
+    #{$s}% {
+      background: transparent;
+    }
+    #{$s + 1}%,
+    #{$r}% {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    #{$r + 3}%,
+    100% {
+      background: transparent;
+    }
+  }
+
+  @keyframes run-spin-#{$i} {
+    0%,
+    #{$s - 0.1}% {
+      opacity: 0;
+    }
+    #{$s}%,
+    #{$r}% {
+      opacity: 1;
+    }
+    #{$r + 0.8}%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes run-check-#{$i} {
+    0%,
+    #{$r}% {
+      opacity: 0;
+      transform: scale(0.4);
+    }
+    #{$r + 2.5}% {
+      opacity: 1;
+      transform: scale(1.18);
+    }
+    #{$r + 4}%,
+    92% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    97%,
+    100% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+  }
+
+  @keyframes run-line-#{$i} {
+    0%,
+    #{$s + 4}% {
+      transform: scaleY(0);
+      opacity: 1;
+    }
+    #{$r + 3}%,
+    92% {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+    97% {
+      transform: scaleY(1);
+      opacity: 0;
+    }
+    97.5%,
+    100% {
+      transform: scaleY(0);
+      opacity: 1;
+    }
+  }
+}
+
+@keyframes run-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes run-blink {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+// Last step (5th) finishes at 4 + 4*12 + 8 = 60%.
+@keyframes run-pill-running {
+  0%,
+  62% {
+    opacity: 1;
+  }
+  64%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes run-pill-success {
+  0%,
+  62% {
+    opacity: 0;
+  }
+  64%,
+  92% {
+    opacity: 1;
+  }
+  96%,
+  100% {
+    opacity: 0;
+  }
+}
+
+// ---------- Reduced motion: show the finished run, no movement ----------
+@include m.reduced-motion {
+  .step,
+  .step__spinwrap,
+  .step__check,
+  .step__line::after,
+  .run__pill,
+  .run__pill i,
+  .step__spin {
+    animation: none !important;
+  }
+
+  .step__check {
+    opacity: 1;
+    transform: none;
+  }
+  .step__line::after {
+    transform: scaleY(1);
+  }
+  .run__pill--running {
+    display: none;
+  }
+  .run__pill--success {
+    opacity: 1;
+  }
+}

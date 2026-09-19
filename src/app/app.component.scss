@@ -1,0 +1,243 @@
+@use '../styles/mixins' as m;
+
+:host {
+  display: block;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 200;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-pill);
+  background: var(--brand-cyan);
+  color: var(--ink-dark);
+  font-weight: 600;
+  transform: translateY(-200%);
+  opacity: 0;
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    opacity var(--dur-fast);
+
+  &:focus-visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// ---------- Sticky nav ----------
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--nav-height);
+  background: color-mix(in srgb, var(--bg-void) 78%, transparent);
+  border-bottom: 1px solid var(--glass-border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  &__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  &__mark {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--gradient-brand);
+    font-weight: 700;
+    box-shadow: var(--glow-blue);
+  }
+
+  &__links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  &__link {
+    @include m.eyebrow;
+    display: block;
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--radius-pill);
+    color: var(--ink-muted);
+    transition:
+      color var(--dur-fast),
+      background var(--dur-fast);
+
+    &:hover,
+    &--active {
+      color: var(--ink);
+    }
+
+    &--active {
+      background: var(--glass-fill);
+      box-shadow: inset 0 0 0 1px var(--glass-border);
+    }
+  }
+
+  &__toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    background: var(--glass-fill);
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  &__bar {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--ink);
+    transition:
+      transform var(--dur-med) var(--ease-out),
+      opacity var(--dur-fast);
+  }
+
+  // Tablet: tighten spacing so brand + six links fit on one row.
+  @media (min-width: 768px) and (max-width: 1000px) {
+    &__link {
+      padding: 0.55rem 0.55rem;
+      letter-spacing: 0.1em;
+    }
+  }
+
+  // Collapse into hamburger below 768px.
+  @include m.bp-down(768px) {
+    &__toggle {
+      display: inline-flex;
+    }
+
+    &__links {
+      position: absolute;
+      top: var(--nav-height);
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: var(--space-2) var(--gutter) var(--space-3);
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--glass-border);
+      // Hidden until opened; visibility keeps links out of the tab order when closed.
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition:
+        opacity var(--dur-med) var(--ease-out),
+        transform var(--dur-med) var(--ease-out),
+        visibility 0s linear var(--dur-med);
+    }
+
+    &__link {
+      padding: 1rem 0.5rem;
+      border-radius: 0;
+      font-size: 0.85rem;
+    }
+
+    &--open &__links {
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+      transition-delay: 0s;
+    }
+
+    &--open &__bar:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    &--open &__bar:nth-child(2) {
+      opacity: 0;
+    }
+    &--open &__bar:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+  }
+}
+
+// ---------- Footer ----------
+.footer {
+  padding: var(--space-8) 0 var(--space-4);
+  border-top: 1px solid var(--glass-border);
+  background: var(--bg-void);
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+
+  &__top {
+    display: grid;
+    gap: var(--space-4);
+    align-items: center;
+
+    @include m.bp-up(800px) {
+      grid-template-columns: 1fr auto auto;
+      gap: var(--space-8);
+    }
+  }
+
+  &__name {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  &__role {
+    margin-top: 0.25rem;
+  }
+
+  &__nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+  }
+
+  &__nav a {
+    @include m.eyebrow;
+    display: inline-block;
+    padding: 0.5rem 0; // comfortable tap target (>= 24px)
+    color: var(--ink-muted);
+    transition: color var(--dur-fast);
+
+    &:hover {
+      color: var(--ink);
+    }
+  }
+
+  &__social {
+    display: flex;
+    gap: var(--space-1);
+  }
+
+  &__legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-3);
+    margin-top: var(--space-6);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--glass-border);
+  }
+}

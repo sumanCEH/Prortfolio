@@ -1,0 +1,75 @@
+<section id="skills" class="section section--light skills" aria-labelledby="skills-title">
+  <div class="container">
+    <app-section-heading eyebrow="Skills" title="The stack I work in" headingId="skills-title" tone="light" />
+
+    <div class="skills__layout">
+      <div class="showcase" appReveal>
+        <div class="showcase__copy">
+          <p class="showcase__eyebrow">Core stack</p>
+          <h3 class="showcase__title">Backend-first, cloud-native.</h3>
+          <p class="showcase__text">Daily drivers: {{ coreTech }}.</p>
+          <dl class="showcase__stats">
+            <div>
+              <dt>Skill areas</dt>
+              <dd>{{ groups.length }}</dd>
+            </div>
+            <div>
+              <dt>Technologies</dt>
+              <dd>{{ techCount }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Decorative orbit of brand logos; every skill is also listed as text in the cards below. -->
+        <div class="orbit" aria-hidden="true">
+        <div class="orbit__stage">
+          <span class="orbit__guide orbit__guide--inner"></span>
+          <span class="orbit__guide orbit__guide--outer"></span>
+
+          <div class="ring ring--inner">
+            @for (t of innerRing; track t.name) {
+              <div class="slot" [style.--a]="t.angle + 'deg'">
+                <div class="tile" [attr.data-name]="t.name">
+                  <img [src]="t.src" alt="" width="32" height="32" decoding="async" />
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="ring ring--outer">
+            @for (t of outerRing; track t.name) {
+              <div class="slot" [style.--a]="t.angle + 'deg'">
+                <div class="tile" [attr.data-name]="t.name">
+                  <img [src]="t.src" alt="" width="32" height="32" decoding="async" />
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="orbit__core">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+              <path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16" />
+            </svg>
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="skills__groups">
+        @for (group of groups; track group.category; let i = $index) {
+          <div class="group" appReveal [revealDelay]="(i % 3) * 0.07">
+            <header class="group__head">
+              <h3 class="group__title">{{ group.category }}</h3>
+              <span class="group__count" aria-hidden="true">{{ group.items.length }}</span>
+            </header>
+            <ul class="group__chips">
+              @for (item of group.items; track item) {
+                <li class="chip">{{ item }}</li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>

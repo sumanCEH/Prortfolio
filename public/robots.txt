@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# TODO: replace with the real site URL (same value as siteUrl in the environment files).
+Sitemap: https://suman-portfolio.vercel.app/sitemap.xml

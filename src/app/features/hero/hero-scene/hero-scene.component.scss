@@ -1,0 +1,94 @@
+:host {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+}
+
+.scene__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 900ms var(--ease-out);
+}
+
+.scene__fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition: opacity 900ms var(--ease-out);
+}
+
+// Where the cluster sits when the layout is wide: right half.
+@media (min-width: 900px) {
+  .scene__fallback {
+    justify-items: end;
+    padding-right: 6%;
+  }
+}
+
+.scene__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.55;
+
+  &--a {
+    width: min(46vw, 520px);
+    aspect-ratio: 1;
+    right: 6%;
+    top: 14%;
+    background: var(--brand-blue);
+  }
+
+  &--b {
+    width: min(34vw, 400px);
+    aspect-ratio: 1;
+    right: 22%;
+    bottom: 8%;
+    background: var(--brand-violet);
+  }
+}
+
+.scene__art {
+  position: relative;
+  width: min(62vw, 520px);
+  height: min(62vw, 520px);
+  overflow: visible;
+
+  line {
+    stroke: var(--brand-cyan);
+    stroke-opacity: 0.35;
+    stroke-width: 0.25;
+  }
+
+  circle {
+    fill: #141c44;
+    stroke: var(--brand-cyan);
+    stroke-opacity: 0.7;
+    stroke-width: 0.3;
+  }
+
+  .hub {
+    fill: #1b2560;
+  }
+}
+
+// Live: canvas takes over, static art fades out.
+[data-mode='live'] {
+  .scene__canvas {
+    opacity: 1;
+  }
+
+  .scene__fallback {
+    opacity: 0;
+  }
+}

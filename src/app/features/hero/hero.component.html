@@ -1,0 +1,48 @@
+<section id="hero" class="hero" [class.hero--photo]="!!photoUrl" aria-label="Introduction">
+  <div class="hero__glow hero__glow--a" data-parallax="0.25" aria-hidden="true"></div>
+  <div class="hero__glow hero__glow--b" data-parallax="0.15" aria-hidden="true"></div>
+
+  <!-- Crosshair corner marks, echoing the reference's framed hero. -->
+  <span class="hero__mark hero__mark--tl" aria-hidden="true"></span>
+  <span class="hero__mark hero__mark--tr" aria-hidden="true"></span>
+  <span class="hero__mark hero__mark--bl" aria-hidden="true"></span>
+  <span class="hero__mark hero__mark--br" aria-hidden="true"></span>
+
+  <app-hero-scene />
+
+  <div class="hero__inner container">
+    <div class="hero__copy">
+      <p class="hero__chip">
+        <span class="hero__dot" aria-hidden="true"></span>
+        <span aria-hidden="true">📩</span>
+        {{ profile.availability }}
+      </p>
+
+      <h1 class="hero__name">
+        <span class="hero__first">{{ firstName }}</span>{{ ' ' }}<span class="hero__last">{{ lastName }}</span>
+      </h1>
+
+      <p class="hero__role">{{ profile.role }}</p>
+      <p class="hero__value">{{ profile.valueProposition }}</p>
+
+      <div class="hero__actions">
+        <app-button variant="primary" href="#contact">Get in touch</app-button>
+        <app-button variant="ghost" href="assets/resume.pdf" download="Suman-Sarkar-Resume.pdf">
+          Download Résumé
+        </app-button>
+      </div>
+    </div>
+
+    @if (photoUrl) {
+      <div class="hero__photo">
+        <img
+          [ngSrc]="photoUrl"
+          width="480"
+          height="600"
+          priority
+          [alt]="'Portrait of ' + profile.name"
+        />
+      </div>
+    }
+  </div>
+</section>

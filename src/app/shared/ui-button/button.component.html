@@ -1,0 +1,53 @@
+<ng-template #content>
+  @if (variant() === 'icon' && arrow()) {
+    <svg
+      class="app-button__arrow"
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  } @else {
+    <span class="app-button__label"><ng-content /></span>
+  }
+</ng-template>
+
+<span
+  #zone
+  class="app-button__zone"
+  (pointermove)="onPointerMove($event)"
+  (pointerleave)="onPointerLeave()"
+>
+  @if (href()) {
+    <a
+      #control
+      class="app-button__control"
+      [attr.href]="href()"
+      [attr.target]="isExternal() ? '_blank' : null"
+      [attr.rel]="isExternal() ? 'noopener noreferrer' : null"
+      [attr.download]="downloadAttr()"
+      [attr.aria-label]="label() ?? null"
+      (click)="onClick($event)"
+    >
+      <ng-container [ngTemplateOutlet]="content" />
+    </a>
+  } @else {
+    <button
+      #control
+      class="app-button__control"
+      [type]="type()"
+      [disabled]="disabled()"
+      [attr.aria-label]="label() ?? null"
+      (click)="onClick($event)"
+    >
+      <ng-container [ngTemplateOutlet]="content" />
+    </button>
+  }
+</span>

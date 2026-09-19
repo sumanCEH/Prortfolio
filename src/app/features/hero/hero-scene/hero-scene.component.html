@@ -1,0 +1,18 @@
+<div class="scene" aria-hidden="true" [attr.data-mode]="mode()">
+  <!-- Static art: shown while Three.js loads, and permanently for reduced motion / no WebGL. -->
+  <div class="scene__fallback">
+    <span class="scene__blob scene__blob--a"></span>
+    <span class="scene__blob scene__blob--b"></span>
+    <svg class="scene__art" viewBox="0 0 100 100" focusable="false">
+      @for (p of outer; track $index) {
+        <line [attr.x1]="hub.x" [attr.y1]="hub.y" [attr.x2]="p.x" [attr.y2]="p.y" />
+      }
+      @for (p of outer; track $index) {
+        <circle [attr.cx]="p.x" [attr.cy]="p.y" r="2.2" />
+      }
+      <circle class="hub" [attr.cx]="hub.x" [attr.cy]="hub.y" r="4.4" />
+    </svg>
+  </div>
+
+  <canvas #canvas class="scene__canvas"></canvas>
+</div>

@@ -1,0 +1,17 @@
+<section id="education" class="section education" aria-labelledby="education-title">
+  <div class="container">
+    <app-section-heading eyebrow="Education" title="Where it started" headingId="education-title" />
+
+    <ul class="education__grid">
+      @for (e of items; track e.degree; let i = $index) {
+        <li appReveal [revealDelay]="i * 0.1">
+          <app-glass-card>
+            <p class="edu__year">{{ e.year }}</p>
+            <h3 class="edu__degree">{{ e.degree }}</h3>
+            <p class="edu__school">{{ e.institution }}</p>
+          </app-glass-card>
+        </li>
+      }
+    </ul>
+  </div>
+</section>

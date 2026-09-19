@@ -1,0 +1,30 @@
+<section id="experience" class="section experience" aria-labelledby="experience-title">
+  <div class="container">
+    <app-section-heading eyebrow="Experience" title="Where I've shipped" headingId="experience-title" />
+
+    <ol class="timeline">
+      @for (job of jobs; track job.id) {
+        <li class="entry" appReveal>
+          <span class="entry__dot" aria-hidden="true"></span>
+          <app-glass-card>
+            <div class="entry__head">
+              <div>
+                <h3 class="entry__role">{{ job.role }}</h3>
+                <p class="entry__company">
+                  {{ job.company }}<span class="entry__context"> · {{ job.context }}</span>
+                </p>
+              </div>
+              <p class="entry__dates">{{ job.start }} – {{ job.end }}</p>
+            </div>
+
+            <ul class="entry__bullets">
+              @for (b of job.bullets; track b) {
+                <li>{{ b }}</li>
+              }
+            </ul>
+          </app-glass-card>
+        </li>
+      }
+    </ol>
+  </div>
+</section>

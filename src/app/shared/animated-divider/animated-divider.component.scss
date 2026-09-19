@@ -1,0 +1,11 @@
+:host {
+  display: block;
+  width: min(240px, 60%);
+}
+
+.divider {
+  display: block;
+  width: 100%;
+  height: 6px;
+  overflow: visible;
+}

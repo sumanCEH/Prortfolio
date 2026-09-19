@@ -1,0 +1,181 @@
+@use '../../../styles/mixins' as m;
+
+:host {
+  display: block;
+}
+
+.work {
+  background:
+    radial-gradient(60% 50% at 85% 0%, color-mix(in srgb, var(--brand-violet) 16%, transparent), transparent 70%),
+    var(--bg-void);
+}
+
+.work__grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: 1fr;
+
+  @include m.bp-up(900px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+}
+
+.card {
+  min-width: 0;
+}
+
+// Cards without a diagram (flagship, CMR portal) span both columns.
+.card--wide {
+  @include m.bp-up(900px) {
+    grid-column: 1 / -1;
+  }
+}
+
+.card__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+}
+
+.card__main,
+.card__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.card__side {
+  flex: 1;
+}
+
+// Wide cards: title + metric on the left, description + tags on the right.
+.card--wide .card__inner {
+  @include m.bp-up(900px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    align-items: center;
+  }
+}
+
+.card--flagship {
+  border-color: color-mix(in srgb, var(--brand-violet) 45%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--brand-blue) 14%, transparent), color-mix(in srgb, var(--brand-violet) 12%, transparent)),
+    var(--glass-fill);
+}
+
+.card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.card__org {
+  @include m.eyebrow;
+  color: var(--brand-cyan);
+}
+
+.card__badge {
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--brand-amber) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-amber) 45%, transparent);
+  color: var(--brand-amber);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.card__title {
+  font-size: var(--fs-h3);
+}
+
+.card__desc {
+  color: var(--ink-muted);
+  line-height: 1.65;
+}
+
+// The visual grows to fill any spare height, so paired cards in a row end flush
+// instead of leaving an empty gap under the shorter one.
+.card__visual {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  margin-block: var(--space-1);
+  padding: var(--space-2);
+  border-radius: var(--radius-image);
+  background: rgba(5, 6, 10, 0.5);
+  border: 1px solid var(--glass-border);
+}
+
+// The CI run card supplies its own frame, so drop the extra padding box around it.
+.card__visual--run {
+  padding: 0;
+  background: none;
+  border: 0;
+  justify-content: stretch;
+
+  app-pipeline-run {
+    display: flex;
+    flex: 1;
+  }
+}
+
+// ---------- Metric ----------
+.metric {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.metric__value {
+  font-family: var(--font-display);
+  font-size: 2.75rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--brand-cyan);
+}
+
+.metric__label {
+  color: var(--ink-muted);
+  font-size: 0.95rem;
+}
+
+// The flagship metric is the visual anchor of the whole section.
+.metric--hero .metric__value {
+  font-size: clamp(4.5rem, 9vw, 7rem);
+  background: linear-gradient(100deg, var(--brand-cyan), var(--brand-blue) 55%, var(--brand-violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.metric--hero .metric__label {
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+// ---------- Tags ----------
+.card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: var(--space-1);
+
+  li {
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--glass-border);
+    background: var(--glass-fill);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+  }
+}
