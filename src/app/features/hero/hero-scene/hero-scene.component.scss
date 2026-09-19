@@ -1,3 +1,5 @@
+@use '../../../../styles/mixins' as m;
+
 :host {
   display: block;
   position: absolute;
@@ -8,6 +10,13 @@
 .scene {
   position: absolute;
   inset: 0;
+
+  // Instant CSS dot grid so the hero is never empty while the canvas boots (and for no-JS).
+  background-image: radial-gradient(rgba(150, 195, 255, 0.16) 1px, transparent 1.4px);
+  background-size: 30px 30px;
+  -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.3), #000 65%);
+  mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.3), #000 65%);
+  transition: background-color 0s;
 }
 
 .scene__canvas {
@@ -16,79 +25,178 @@
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 900ms var(--ease-out);
+  transition: opacity 600ms var(--ease-out);
 }
 
-.scene__fallback {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  transition: opacity 900ms var(--ease-out);
-}
+// Canvas takes over from the CSS grid once it is drawing.
+[data-live='true'] {
+  background-image: none;
+  -webkit-mask-image: none;
+  mask-image: none;
 
-// Where the cluster sits when the layout is wide: right half.
-@media (min-width: 900px) {
-  .scene__fallback {
-    justify-items: end;
-    padding-right: 6%;
-  }
-}
-
-.scene__blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
-  opacity: 0.55;
-
-  &--a {
-    width: min(46vw, 520px);
-    aspect-ratio: 1;
-    right: 6%;
-    top: 14%;
-    background: var(--brand-blue);
-  }
-
-  &--b {
-    width: min(34vw, 400px);
-    aspect-ratio: 1;
-    right: 22%;
-    bottom: 8%;
-    background: var(--brand-violet);
-  }
-}
-
-.scene__art {
-  position: relative;
-  width: min(62vw, 520px);
-  height: min(62vw, 520px);
-  overflow: visible;
-
-  line {
-    stroke: var(--brand-cyan);
-    stroke-opacity: 0.35;
-    stroke-width: 0.25;
-  }
-
-  circle {
-    fill: #141c44;
-    stroke: var(--brand-cyan);
-    stroke-opacity: 0.7;
-    stroke-width: 0.3;
-  }
-
-  .hub {
-    fill: #1b2560;
-  }
-}
-
-// Live: canvas takes over, static art fades out.
-[data-mode='live'] {
   .scene__canvas {
     opacity: 1;
   }
+}
 
-  .scene__fallback {
-    opacity: 0;
+// ---------- Live request-trace card ----------
+.trace {
+  position: absolute;
+  right: 4%;
+  bottom: 9%;
+  width: min(22rem, 34vw);
+  padding: 0.85rem 1rem 1rem;
+  border-radius: 16px;
+  background: rgba(10, 13, 30, 0.72);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-muted);
+}
+
+.trace__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+}
+
+.trace__lights {
+  display: inline-flex;
+  gap: 5px;
+
+  i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+  }
+  i:first-child {
+    background: #ff6b6b;
+  }
+  i:nth-child(2) {
+    background: #ffb454;
+  }
+  i:nth-child(3) {
+    background: #3fb950;
+  }
+}
+
+.trace__req {
+  margin: 0 0 0.55rem;
+  color: var(--ink);
+  opacity: 0.35;
+  transition: opacity 250ms;
+
+  b {
+    color: var(--brand-cyan);
+    font-weight: 600;
+  }
+  &.on {
+    opacity: 1;
+  }
+}
+
+.trace__arrow {
+  margin-right: 0.35em;
+  color: var(--brand-cyan);
+}
+
+.trace__lines {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: grid;
+    grid-template-columns: 1rem 4.6rem 1fr auto;
+    align-items: baseline;
+    gap: 0.4rem;
+    opacity: 0.22;
+    transform: translateX(-4px);
+    transition:
+      opacity 250ms var(--ease-out),
+      transform 250ms var(--ease-out);
+  }
+
+  li.on {
+    opacity: 1;
+    transform: none;
+  }
+
+  li.now .trace__msg {
+    color: var(--brand-cyan);
+  }
+}
+
+.trace__check {
+  color: #3fb950;
+}
+
+.trace__svc {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.trace__msg {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 400ms;
+}
+
+.trace__ms {
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.trace__done {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.7rem 0 0;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--glass-border);
+  color: var(--ink);
+  opacity: 0.25;
+  transition: opacity 300ms;
+
+  .trace__ms {
+    margin-left: auto;
+  }
+  &.on {
+    opacity: 1;
+  }
+  &.on .trace__badge {
+    background: color-mix(in srgb, #3fb950 22%, transparent);
+    color: #5ee27a;
+  }
+}
+
+.trace__badge {
+  padding: 0.05rem 0.5rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.08);
+  font-weight: 600;
+  transition:
+    background 300ms,
+    color 300ms;
+}
+
+@include m.reduced-motion {
+  .scene__canvas,
+  .trace__req,
+  .trace__lines li,
+  .trace__done,
+  .trace__badge {
+    transition: none;
   }
 }

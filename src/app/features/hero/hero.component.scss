@@ -156,12 +156,107 @@
   letter-spacing: -0.045em;
 }
 
-.hero__last {
+// Each name line rises out of a mask; the surname's gradient then keeps drifting.
+.hero__line {
+  display: block;
   width: fit-content;
-  background: linear-gradient(100deg, var(--ink) 10%, var(--brand-cyan) 55%, var(--brand-violet));
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.hero__first,
+.hero__last {
+  display: inline-block;
+  transform: translateY(112%);
+  animation: hero-rise 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.05s forwards;
+}
+
+.hero__last {
+  background: linear-gradient(
+    100deg,
+    var(--ink) 5%,
+    var(--brand-cyan) 35%,
+    var(--brand-violet) 65%,
+    var(--ink) 95%
+  );
+  background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  animation:
+    hero-rise 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.18s forwards,
+    hero-shimmer 7s ease-in-out 1.2s infinite alternate;
+}
+
+@keyframes hero-rise {
+  to {
+    transform: none;
+  }
+}
+
+@keyframes hero-shimmer {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
+// Everything else fades up in sequence, after the name.
+.hero__chip,
+.hero__role,
+.hero__value,
+.hero__actions {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: hero-fade-up 0.7s var(--ease-out) forwards;
+  animation-delay: var(--d, 0s);
+}
+.hero__chip {
+  --d: 0s;
+}
+.hero__role {
+  --d: 0.32s;
+}
+.hero__value {
+  --d: 0.42s;
+}
+.hero__actions {
+  --d: 0.52s;
+}
+
+@keyframes hero-fade-up {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// First visit: hold only the name until the loading screen has lifted, so its rise is seen.
+// The supporting text animates underneath, which keeps the first visible paint (LCP) early.
+:host-context(html.is-loading) {
+  .hero__first,
+  .hero__last {
+    animation-play-state: paused;
+  }
+}
+
+@include m.reduced-motion {
+  .hero__first,
+  .hero__last,
+  .hero__chip,
+  .hero__role,
+  .hero__value,
+  .hero__actions {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .hero__last {
+    background-size: 100% 100%;
+  }
 }
 
 .hero__role {
@@ -226,9 +321,10 @@
     align-items: flex-end;
   }
 
+  // Sized against the viewport (like the padding below), not the hero, which can grow taller.
   .hero:not(.hero--photo) app-hero-scene {
     inset: 0 0 auto 0;
-    height: 46%;
+    height: calc(46vh - 1.25rem);
   }
 
   .hero:not(.hero--photo) .hero__inner {

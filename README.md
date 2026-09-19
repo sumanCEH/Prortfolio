@@ -1,6 +1,6 @@
 # Suman Sarkar: Portfolio
 
-A dark, motion-rich personal portfolio for a Fullstack Java Developer, built with Angular. The hero has a real-time 3D "distributed system" made of nodes and request pulses. Buttons are magnetic. Sections reveal on scroll. Everything respects `prefers-reduced-motion`.
+A dark, motion-rich personal portfolio for a Fullstack Java Developer, built with Angular. The hero is a live "request trace": an API call travelling through a microservice graph over a pointer-reactive dot grid. Buttons are magnetic. Sections reveal on scroll. Everything respects `prefers-reduced-motion`.
 
 Design and content decisions live in [Plan.md](Plan.md).
 
@@ -11,7 +11,7 @@ Design and content decisions live in [Plan.md](Plan.md).
 | Framework | Angular 22, standalone components, signals, zoneless change detection |
 | Rendering | Static prerender (SSG) at build time, then client hydration |
 | Styling | SCSS with CSS custom properties (design tokens in `src/styles/_tokens.scss`) |
-| 3D | Three.js, loaded lazily after the page settles (`three-scene.core.ts`) |
+| Hero visual | Canvas 2D "live request trace" (`trace-scene.ts`), a few KB, no WebGL |
 | Animation | GSAP + ScrollTrigger, loaded lazily (`gsap.service.ts`) |
 | Contact form | Reactive Forms + EmailJS (no backend) |
 | Tests | Vitest via `ng test` |
@@ -66,7 +66,7 @@ Until the placeholders (`REPLACE_ME`) are replaced, the form shows a friendly "n
 - [x] Email, LinkedIn, GitHub, both phone numbers and the WhatsApp chat number are set in `cv-data.ts` (`contact`).
 - [ ] Until EmailJS is configured, the contact form offers the visitor a pre-filled email link and a Gmail link instead of sending directly.
 - [x] `siteUrl`, `robots.txt` and `sitemap.xml` point at the GitHub Pages address (`https://sumanceh.github.io/Prortfolio/`). Change all three if you add a custom domain.
-- [ ] When the photo is ready, put it in `src/assets/images/` and set `profile.photoUrl` in `cv-data.ts`. That switches the hero to the photo layout, with the 3D cluster as a corner accent.
+- [ ] When the photo is ready, put it in `src/assets/images/` and set `profile.photoUrl` in `cv-data.ts`. That switches the hero to the photo layout, with the request trace as a corner accent.
 - [ ] Publish it: follow **Hosting on GitHub Pages** below.
 
 ## Hosting on GitHub Pages (free)
@@ -88,7 +88,7 @@ Notes:
 ```
 src/
   app/
-    core/        services (gsap, three-scene, seo, contact) and models
+    core/        services (gsap, trace-scene, seo, contact) and models
     shared/      ui-button, section-heading, glass-card, animated-divider,
                  flow-diagram, count-up, icon, reveal directive
     features/    hero, about, experience, work, skills,
@@ -105,9 +105,9 @@ Measured on a production build with Lighthouse:
 | | Performance | Accessibility | Best practices | SEO |
 |---|---|---|---|---|
 | Desktop | 100 | 100 | 100 | 100 |
-| Mobile | 85 | 100 | 100 | 100 |
+| Mobile | 90 | 100 | 100 | 100 |
 
-Three.js and GSAP are separate lazy chunks and are not in the initial bundle.
+GSAP is a separate lazy chunk. The hero animation is plain Canvas 2D, so there is no heavy 3D download.
 
 ## Credits
 
