@@ -38,7 +38,7 @@ npm test           # unit tests
 ## Résumé, favicon and loading screen
 
 - **Résumé:** `npm run resume` rebuilds `src/assets/resume.pdf` from `cv-data.ts`, so the PDF and the website never disagree. The hero's "Download Résumé" button serves it.
-- **Favicon:** `public/favicon.svg` (plus `favicon.ico`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png` and `site.webmanifest`).
+- **Favicon:** `public/favicon.svg` (plus `favicon.ico` and `apple-touch-icon.png`). There is no web manifest on purpose, so browsers do not offer to "install" the site as an app.
 - **Loading screen:** lives in `src/index.html` so it paints instantly. It plays once per browser (remembered in localStorage). Add `?intro` to the URL to replay it, and click or press any key to skip it.
 
 ## Where the content lives
