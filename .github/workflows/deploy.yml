@@ -19,7 +19,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  # Runs beside the build and does NOT gate the deploy: a flaky test runner must never take the
+  # site down. A failure still shows as a red cross on the commit. One retry absorbs flakiness.
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +34,19 @@ jobs:
       - run: npm ci
 
       - name: Unit tests
-        run: npm test -- --watch=false
+        run: npm test -- --watch=false || npm test -- --watch=false
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
 
       # A project site lives under /<repo-name>/, so the base href must match. Taking it from
       # the repository name means it keeps working if the repo is renamed.

@@ -15,7 +15,7 @@ Design and content decisions live in [Plan.md](Plan.md).
 | Animation | GSAP + ScrollTrigger, loaded lazily (`gsap.service.ts`) |
 | Contact form | Reactive Forms + EmailJS (no backend) |
 | Tests | Vitest via `ng test` |
-| Hosting | Vercel (static output) |
+| Hosting | GitHub Pages via GitHub Actions (static output) |
 
 ## Run locally
 
