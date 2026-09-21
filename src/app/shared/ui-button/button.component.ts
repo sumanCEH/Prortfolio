@@ -30,7 +30,7 @@ type QuickTo = (value: number) => unknown;
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './button.component.html',
   styleUrl: './button.component.scss',
-  host: { '[class]': '"app-button app-button--" + variant()' },
+  host: { '[class]': '"app-button app-button--" + variant() + (block() ? " app-button--block" : "")' },
 })
 export class ButtonComponent {
   private readonly gsapSvc = inject(GsapService);
@@ -44,6 +44,8 @@ export class ButtonComponent {
   readonly label = input<string>();
   /** Icon variant only: draw the built-in arrow that rotates to ↗ on hover. */
   readonly arrow = input(false);
+  /** On phones, stretch to fill its cell so paired buttons share a row equally. */
+  readonly block = input(false);
 
   protected readonly isExternal = computed(() => /^https?:\/\//.test(this.href() ?? ''));
   protected readonly downloadAttr = computed(() => {

@@ -31,6 +31,8 @@ export class HeroComponent {
   protected readonly photoUrl = CV_DATA.profile.photoUrl;
   protected readonly firstName = CV_DATA.profile.name.split(' ')[0];
   protected readonly lastName = CV_DATA.profile.name.split(' ').slice(1).join(' ');
+  /** "Fullstack Java Developer · Senior Associate Consultant" split into its parts, so phones can stack them. */
+  protected readonly roleParts = CV_DATA.profile.role.split(' · ');
 
   constructor() {
     // Subtle parallax: the background glows drift slower than the page scrolls.

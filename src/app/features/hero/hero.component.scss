@@ -315,25 +315,96 @@
   }
 }
 
-// ---------- Mobile: scene on top, copy below ----------
+// ---------- Mobile: copy first (buttons above the fold), then the live request timeline ----------
 @include m.bp-down(900px) {
   .hero {
-    align-items: flex-end;
-  }
+    // Hug the content, stacked top to bottom.
+    min-height: 0;
+    flex-direction: column;
+    align-items: stretch;
 
-  // Sized against the viewport (like the padding below), not the hero, which can grow taller.
-  .hero:not(.hero--photo) app-hero-scene {
-    inset: 0 0 auto 0;
-    height: calc(46vh - 1.25rem);
+    // A faint dot grid that fades out downwards: texture behind the text, echoing the desktop canvas.
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background-image: radial-gradient(rgba(150, 195, 255, 0.16) 1px, transparent 1.4px);
+      background-size: 24px 24px;
+      -webkit-mask-image: linear-gradient(180deg, #000, transparent 70%);
+      mask-image: linear-gradient(180deg, #000, transparent 70%);
+      pointer-events: none;
+    }
   }
 
   .hero:not(.hero--photo) .hero__inner {
-    padding-top: 46vh;
-    padding-bottom: var(--space-6);
+    order: 1;
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-3);
   }
 
-  .hero__mark--bl,
-  .hero__mark--br {
+  // The scene stops being a full-hero backdrop and becomes a card under the buttons.
+  .hero:not(.hero--photo) app-hero-scene {
+    order: 2;
+    position: relative;
+    inset: auto;
+    height: auto;
+    padding: 0 var(--gutter) var(--space-6);
+  }
+
+  .hero__copy {
+    gap: var(--space-2);
+  }
+
+  // Tablets: copy on the left, the timeline card on the right, instead of a lone centred card.
+  @media (min-width: 600px) {
+    .hero:not(.hero--photo) {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .hero:not(.hero--photo) .hero__inner {
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: none;
+      margin-inline: 0;
+      padding-block: var(--space-6);
+    }
+
+    .hero:not(.hero--photo) app-hero-scene {
+      flex: 0 0 min(45%, 23rem);
+      padding: 0 var(--gutter) 0 0;
+    }
+  }
+
+  // The corner crosshairs frame the desktop hero only.
+  .hero__mark {
     display: none;
+  }
+
+  .hero__role {
+    font-size: clamp(1rem, 4.4vw, 1.125rem);
+  }
+
+  // Stack the two role titles; the "·" between them only makes sense on one line.
+  .hero__role-part {
+    display: block;
+  }
+  .hero__role-sep {
+    display: none;
+  }
+
+  .hero__value {
+    font-size: 1rem;
+  }
+
+  // Equal-width buttons on one row; they wrap to full-width rows on the narrowest screens.
+  .hero__actions {
+    width: 100%;
+    max-width: 30rem; // keeps the pair from stretching across a tablet
+
+    app-button {
+      flex: 1 1 8.5rem;
+    }
   }
 }

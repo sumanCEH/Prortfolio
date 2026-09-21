@@ -4,7 +4,7 @@
 
     <ol class="timeline">
       @for (job of jobs; track job.id) {
-        <li class="entry" appReveal>
+        <li class="entry" appReveal [class.is-open]="isOpen(job.id)">
           <span class="entry__dot" aria-hidden="true"></span>
           <app-glass-card>
             <div class="entry__head">
@@ -17,11 +17,23 @@
               <p class="entry__dates">{{ job.start }} – {{ job.end }}</p>
             </div>
 
-            <ul class="entry__bullets">
-              @for (b of job.bullets; track b) {
-                <li>{{ b }}</li>
+            <ul class="entry__bullets" [id]="'bullets-' + job.id">
+              @for (b of job.bullets; track b; let i = $index) {
+                <li [class.is-extra]="i >= collapsedAfter">{{ b }}</li>
               }
             </ul>
+
+            @if (job.bullets.length > collapsedAfter) {
+              <button
+                type="button"
+                class="entry__toggle"
+                [attr.aria-expanded]="isOpen(job.id)"
+                [attr.aria-controls]="'bullets-' + job.id"
+                (click)="toggle(job.id)"
+              >
+                {{ isOpen(job.id) ? 'Show less' : 'Show ' + (job.bullets.length - collapsedAfter) + ' more' }}
+              </button>
+            }
           </app-glass-card>
         </li>
       }

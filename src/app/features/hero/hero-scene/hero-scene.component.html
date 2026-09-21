@@ -1,6 +1,41 @@
 <div class="scene" aria-hidden="true" [attr.data-live]="live()">
   <canvas #canvas class="scene__canvas"></canvas>
 
+  <!-- Phones and small tablets: the request as a vertical timeline. Always in the markup (hidden
+       by CSS on wide screens) so nothing shifts when the page hydrates. Decorative. -->
+  <div class="rail" [style.--pos]="pos()" [class.rail--done]="step() === 6">
+    <div class="rail__bar">
+      <span class="rail__lights"><i></i><i></i><i></i></span>
+      <span class="rail__req" [class.on]="step() >= 0"><b>POST</b> /api/orders</span>
+      <span class="rail__live"><i></i>live</span>
+    </div>
+
+    <div class="rail__body">
+      <span class="rail__track"></span>
+      <span class="rail__fill"></span>
+      <span class="rail__packet"></span>
+
+      <ol class="rail__rows">
+        @for (r of rail; track r.service; let i = $index) {
+          <li [class.on]="step() >= i + 1" [class.now]="step() === i + 1" [style.--c]="r.color">
+            <span class="rail__node"></span>
+            <span class="rail__text">
+              <b>{{ r.name }}</b>
+              <em>{{ r.message }}</em>
+            </span>
+            <span class="rail__ms">{{ r.ms }}</span>
+          </li>
+        }
+      </ol>
+    </div>
+
+    <p class="rail__done" [class.on]="step() === 6">
+      <span class="rail__badge">201</span>
+      <span>Created</span>
+      <span class="rail__total">42ms total</span>
+    </p>
+  </div>
+
   @if (showLog()) {
     <!-- Decorative: mirrors the request being animated on the canvas. -->
     <div class="trace">

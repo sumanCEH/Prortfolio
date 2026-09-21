@@ -191,12 +191,370 @@
     color 300ms;
 }
 
+// ---------- Phone timeline card ----------
+// The same request as the canvas graph, laid out as a vertical rail with readable type.
+.rail {
+  --rh: 42px; // row height: the packet and the lit path move in these steps
+  --rx: 1.6rem; // x of the rail line inside the card
+  --travel: 800ms; // keep equal to TRAVEL_MS in trace-sequence.ts
+  --ease-travel: cubic-bezier(0.65, 0, 0.35, 1);
+  display: none; // wide screens use the canvas graph instead
+  position: relative;
+  width: 100%;
+  max-width: 30rem;
+  margin-inline: auto;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  background: linear-gradient(180deg, rgba(22, 28, 62, 0.8), rgba(9, 12, 28, 0.9));
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(46, 107, 255, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  font-family: var(--font-mono);
+  color: var(--ink-muted);
+}
+
+.rail__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.78rem;
+}
+
+.rail__lights {
+  display: inline-flex;
+  gap: 5px;
+
+  i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+  }
+  i:nth-child(1) {
+    background: #ff6b6b;
+  }
+  i:nth-child(2) {
+    background: #ffb454;
+  }
+  i:nth-child(3) {
+    background: #3fb950;
+  }
+}
+
+.rail__req {
+  color: var(--ink);
+  opacity: 0.45;
+  transition: opacity 250ms;
+
+  b {
+    color: var(--brand-cyan);
+    font-weight: 600;
+  }
+  &.on {
+    opacity: 1;
+  }
+}
+
+.rail__live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+  color: #3fb950;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+
+  i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: rail-blink 1.6s ease-in-out infinite;
+  }
+}
+
+.rail__body {
+  position: relative;
+  padding: 0.4rem 0;
+}
+
+.rail__track,
+.rail__fill {
+  position: absolute;
+  top: 0.4rem;
+  left: calc(var(--rx) - 1px);
+  width: 2px;
+  border-radius: 2px;
+}
+
+.rail__track {
+  bottom: 0.4rem;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+// The part of the rail the request has already travelled.
+.rail__fill {
+  height: max(0px, calc(var(--pos, 0) * var(--rh) - var(--rh) / 2));
+  background: linear-gradient(180deg, var(--brand-cyan), var(--brand-blue));
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.6);
+  transition:
+    height var(--travel) var(--ease-travel),
+    background 300ms;
+}
+
+// The glowing packet. Its row comes from --pos, set by the component from the timeline.
+.rail__packet {
+  position: absolute;
+  top: calc(0.4rem - var(--rh) / 2 - 5px);
+  left: calc(var(--rx) - 5px);
+  z-index: 2;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    0 0 0 4px rgba(34, 211, 238, 0.28),
+    0 0 18px 5px rgba(34, 211, 238, 0.85);
+  opacity: min(var(--pos, 0), 1);
+  transform: translateY(calc(var(--pos, 0) * var(--rh)));
+  transition:
+    transform var(--travel) var(--ease-travel),
+    opacity 250ms,
+    background 300ms,
+    box-shadow 300ms;
+}
+
+.rail__rows {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.75rem;
+    height: var(--rh);
+    padding-left: calc(var(--rx) + 1.35rem);
+    opacity: 0.55;
+    transition: opacity 300ms var(--ease-out);
+  }
+
+  li.on {
+    opacity: 1;
+  }
+}
+
+.rail__node {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--rx) - 5px);
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: #141a3a;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition:
+    background 300ms,
+    border-color 300ms,
+    box-shadow 300ms;
+
+  // A ring that expands once as the packet reaches the row.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1px solid var(--c);
+    opacity: 0;
+  }
+}
+
+.rail__rows li.on .rail__node {
+  background: var(--c);
+  border-color: var(--c);
+  box-shadow: 0 0 14px var(--c);
+}
+
+.rail__rows li.now .rail__node::after {
+  animation: rail-ping 0.9s ease-out;
+}
+
+.rail__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+
+  b {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--ink-muted);
+    transition: color 300ms;
+  }
+
+  em {
+    overflow: hidden;
+    font-size: 0.72rem;
+    font-style: normal;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.rail__rows li.on .rail__text b {
+  color: var(--ink);
+}
+
+.rail__ms {
+  padding-right: 1rem;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+  transform: translateX(6px);
+  transition:
+    opacity 300ms,
+    transform 300ms var(--ease-out);
+}
+
+.rail__rows li.on .rail__ms {
+  color: var(--c);
+  opacity: 1;
+  transform: none;
+}
+
+.rail__done {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0.7rem 1rem;
+  border-top: 1px solid var(--glass-border);
+  font-size: 0.82rem;
+  color: var(--ink);
+  opacity: 0.4;
+  transition: opacity 300ms;
+
+  &.on {
+    opacity: 1;
+  }
+  &.on .rail__badge {
+    background: color-mix(in srgb, #3fb950 24%, transparent);
+    color: #5ee27a;
+  }
+}
+
+.rail__badge {
+  padding: 0.05rem 0.55rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.08);
+  font-weight: 600;
+  transition:
+    background 300ms,
+    color 300ms;
+}
+
+.rail__total {
+  margin-left: auto;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+// Response received: the path and the packet turn green.
+.rail--done {
+  .rail__fill {
+    background: linear-gradient(180deg, #5ee27a, #3fb950);
+    box-shadow: 0 0 10px rgba(63, 185, 80, 0.6);
+  }
+  .rail__packet {
+    background: #d6fbe0;
+    box-shadow:
+      0 0 0 4px rgba(63, 185, 80, 0.3),
+      0 0 18px 5px rgba(63, 185, 80, 0.85);
+  }
+}
+
+@keyframes rail-ping {
+  from {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(3.2);
+  }
+}
+
+@keyframes rail-blink {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+// Below 900px the timeline card replaces the canvas graph (except in the small corner-accent
+// layout, which keeps the canvas). The card sits in the page flow instead of filling the hero.
+@media (max-width: 899.98px) {
+  .scene {
+    position: relative;
+    inset: auto;
+    background-image: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .scene__canvas {
+    display: none;
+  }
+
+  .rail {
+    display: block;
+  }
+
+  :host-context(.hero--photo) {
+    .scene {
+      position: absolute;
+      inset: 0;
+    }
+    .scene__canvas {
+      display: block;
+    }
+    .rail {
+      display: none;
+    }
+  }
+}
+
 @include m.reduced-motion {
   .scene__canvas,
+  .rail__fill,
+  .rail__packet,
+  .rail__rows li,
+  .rail__node,
+  .rail__text b,
+  .rail__ms,
+  .rail__done,
+  .rail__badge,
+  .rail__req,
   .trace__req,
   .trace__lines li,
   .trace__done,
   .trace__badge {
     transition: none;
+  }
+
+  .rail__rows li.now .rail__node::after,
+  .rail__live i {
+    animation: none;
   }
 }

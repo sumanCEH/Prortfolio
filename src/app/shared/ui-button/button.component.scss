@@ -101,6 +101,24 @@
   }
 }
 
+// ---------- Block: fill the cell on phones (paired buttons share a row) ----------
+@include m.bp-down(900px) {
+  :host(.app-button--block) {
+    display: block;
+  }
+
+  :host(.app-button--block) .app-button__zone {
+    display: block;
+  }
+
+  :host(.app-button--block) .app-button__control {
+    display: flex;
+    width: 100%;
+    padding-inline: 0.75rem;
+    font-size: 0.95rem;
+  }
+}
+
 .app-button__arrow {
   transition: transform var(--dur-med) var(--ease-out);
 }

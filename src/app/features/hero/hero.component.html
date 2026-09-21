@@ -22,12 +22,16 @@
         <span class="hero__line"><span class="hero__first">{{ firstName }}</span></span>{{ ' ' }}<span class="hero__line"><span class="hero__last">{{ lastName }}</span></span>
       </h1>
 
-      <p class="hero__role">{{ profile.role }}</p>
+      <p class="hero__role">
+        @for (part of roleParts; track part; let last = $last) {
+          <span class="hero__role-part">{{ part }}</span>@if (!last) {<span class="hero__role-sep" aria-hidden="true"> · </span>}
+        }
+      </p>
       <p class="hero__value">{{ profile.valueProposition }}</p>
 
       <div class="hero__actions">
-        <app-button variant="primary" href="#contact">Get in touch</app-button>
-        <app-button variant="ghost" href="assets/resume.pdf" download="Suman-Sarkar-Resume.pdf">
+        <app-button variant="primary" href="#contact" [block]="true">Get in touch</app-button>
+        <app-button variant="ghost" href="assets/resume.pdf" download="Suman-Sarkar-Resume.pdf" [block]="true">
           Download Résumé
         </app-button>
       </div>

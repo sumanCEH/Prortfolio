@@ -21,8 +21,8 @@ export class AboutComponent {
   /** Quick-facts strip, all derived from cv-data.ts. */
   protected readonly facts: Fact[] = [
     { value: `${this.profile.yearsOfExperience} years`, label: 'Experience' },
-    { value: this.profile.domains.join(' & '), label: 'Domains' },
     { value: this.profile.location, label: 'Based in' },
+    { value: this.profile.domains.join(' & '), label: 'Domains' },
     { value: this.profile.relocation, label: 'Relocation' },
   ];
 }

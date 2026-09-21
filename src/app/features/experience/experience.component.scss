@@ -78,6 +78,10 @@
 
 .entry__role {
   font-size: var(--fs-h3);
+
+  @include m.bp-down(480px) {
+    font-size: 1.3rem;
+  }
 }
 
 .entry__company {
@@ -100,6 +104,40 @@
   font-size: 0.8rem;
   color: var(--ink);
   white-space: nowrap;
+}
+
+// Only shown on phones, and only for jobs with more bullets than fit the collapsed view.
+.entry__toggle {
+  display: none;
+  align-items: center;
+  min-height: 44px;
+  margin-top: var(--space-2);
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-fill);
+  color: var(--brand-cyan);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--brand-cyan) 50%, transparent);
+  }
+  &:focus-visible {
+    @include m.focus-ring;
+  }
+}
+
+@include m.bp-down(768px) {
+  .entry__toggle {
+    display: inline-flex;
+  }
+
+  .entry:not(.is-open) .entry__bullets li.is-extra {
+    display: none;
+  }
 }
 
 .entry__bullets {

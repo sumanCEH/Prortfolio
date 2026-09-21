@@ -293,6 +293,10 @@
   display: grid;
   gap: var(--space-2);
 
+  @include m.bp-down(560px) {
+    gap: var(--space-1);
+  }
+
   @include m.bp-up(640px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -315,6 +319,12 @@
     border-color: color-mix(in srgb, var(--brand-blue) 40%, transparent);
     box-shadow: 0 14px 36px rgba(46, 107, 255, 0.12);
   }
+
+  // Phones: denser cards so ten of them do not fill five screens.
+  @include m.bp-down(560px) {
+    gap: 0.75rem;
+    padding: var(--space-2);
+  }
 }
 
 .group__head {
@@ -324,6 +334,10 @@
   gap: var(--space-1);
   padding-bottom: var(--space-2);
   border-bottom: 1px solid rgba(11, 12, 20, 0.08);
+
+  @include m.bp-down(560px) {
+    padding-bottom: 0.65rem;
+  }
 }
 
 .group__title {
@@ -351,6 +365,10 @@
   flex-wrap: wrap;
   align-content: flex-start;
   gap: 0.5rem;
+
+  @include m.bp-down(560px) {
+    gap: 0.4rem;
+  }
 }
 
 .chip {
@@ -368,5 +386,10 @@
   &:hover {
     border-color: var(--brand-blue);
     background: #fff;
+  }
+
+  @include m.bp-down(560px) {
+    padding: 0.3rem 0.65rem;
+    font-size: 0.78rem;
   }
 }

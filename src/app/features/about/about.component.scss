@@ -20,6 +20,11 @@
   line-height: 1.65;
   color: var(--ink-dark);
   max-width: 40rem;
+
+  @include m.bp-down(600px) {
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
 }
 
 .about__facts {
@@ -27,8 +32,15 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-2);
 
-  // One column on very narrow phones so long values (like the relocation list) never overflow.
-  @include m.bp-down(420px) {
+  // Phones: the two short facts pair up; the longer ones (domains, relocation) get a full row each.
+  @include m.bp-down(600px) {
+    .fact:nth-child(n + 3) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  // One column only on the very narrowest screens.
+  @include m.bp-down(340px) {
     grid-template-columns: minmax(0, 1fr);
   }
 }
@@ -42,6 +54,11 @@
   background: #fff;
   border: 1px solid rgba(11, 12, 20, 0.08);
   box-shadow: 0 10px 30px rgba(46, 107, 255, 0.06);
+
+  @include m.bp-down(600px) {
+    gap: 0.25rem;
+    padding: var(--space-2) 1.25rem;
+  }
 }
 
 .fact__label {
@@ -56,4 +73,8 @@
   line-height: 1.25;
   color: var(--ink-dark);
   overflow-wrap: anywhere;
+
+  @include m.bp-down(600px) {
+    font-size: 1.1rem;
+  }
 }

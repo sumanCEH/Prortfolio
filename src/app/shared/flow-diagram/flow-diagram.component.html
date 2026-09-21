@@ -17,8 +17,8 @@
 
     @for (b of l.boxes; track b.label) {
       <g>
-        <rect class="box" [attr.x]="b.x" [attr.y]="b.y" [attr.width]="l.boxW" [attr.height]="l.boxH" rx="12" />
-        <text class="label" [attr.x]="b.x + l.boxW / 2" [attr.y]="b.y + (b.sub.length ? 26 : l.boxH / 2 + 5)" text-anchor="middle">
+        <rect class="box" [attr.x]="b.x" [attr.y]="b.y" [attr.width]="l.boxW" [attr.height]="b.h" rx="12" />
+        <text class="label" [attr.x]="b.x + l.boxW / 2" [attr.y]="b.y + (b.sub.length ? 26 : b.h / 2 + 5)" text-anchor="middle">
           {{ b.label }}
         </text>
         @for (s of b.sub; track s; let i = $index) {

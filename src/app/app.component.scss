@@ -141,6 +141,9 @@
       align-items: stretch;
       gap: 0;
       padding: var(--space-2) var(--gutter) var(--space-3);
+      // Never taller than the screen: scroll inside the panel on short phones.
+      max-height: calc(100svh - var(--nav-height));
+      overflow-y: auto;
       background: var(--bg-elevated);
       border-bottom: 1px solid var(--glass-border);
       // Hidden until opened; visibility keeps links out of the tab order when closed.
@@ -154,8 +157,8 @@
     }
 
     &__link {
-      padding: 1rem 0.5rem;
-      border-radius: 0;
+      padding: 1rem 0.75rem;
+      border-radius: 12px;
       font-size: 0.85rem;
     }
 
